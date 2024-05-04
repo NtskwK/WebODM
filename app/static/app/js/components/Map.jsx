@@ -388,7 +388,7 @@ class Map extends React.Component {
       positionControl: true,
       zoomControl: false,
       minZoom: 0,
-      maxZoom: 24
+      maxZoom: 16
     });
 
     // For some reason, in production this class is not added (but we need it)
@@ -512,10 +512,10 @@ _('Example:'),
     new AddOverlayCtrl().addTo(this.map);
 
     this.map.fitBounds([
-     [13.772919746115805,
-     45.664640939831735],
-     [13.772825784981254,
-     45.664591558975154]]);
+     [25.062919746115805,
+     110.300640939831735],
+     [25.062825784981254,
+     110.300591558975154]]);
     this.map.attributionControl.setPrefix("");
 
     this.setState({showLoading: true});
