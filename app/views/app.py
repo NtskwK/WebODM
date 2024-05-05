@@ -46,7 +46,13 @@ def dashboard(request):
 
     return render(request, 'app/dashboard.html', {'title': _('Dashboard'),
         'no_processingnodes': no_processingnodes,
-        'no_tasks': no_tasks
+        'no_tasks': no_tasks,
+        'params': {
+                # 'map-items': json.dumps(mapItems),
+                'title': '全局地图',
+                'public': 'false',
+                'share-buttons': 'false' if settings.DESKTOP_MODE else 'true'
+            }.items()
     })
 
 
@@ -150,6 +156,21 @@ def welcome(request):
                       'title': _('Welcome'),
                       'firstuserform': fuf
                   })
+
+
+
+@login_required
+def project_map(request):
+    title = _("Project Map")
+    return render(request, 'app/global_map.html', {
+            'title': title,
+            'params': {
+                # 'map-items': json.dumps(mapItems),
+                'title': title,
+                'public': 'false',
+                'share-buttons': 'false' if settings.DESKTOP_MODE else 'true'
+            }.items()
+        })
 
 
 def handler404(request, exception):

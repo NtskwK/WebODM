@@ -1,0 +1,28 @@
+[data-mapview]{
+    height: calc(70vh);
+}
+
+.map-view{
+    height: calc(90%);
+    position: relative;
+
+    input[type="range"]{
+        margin-left: 4px;
+        display: inline-block;
+        width: 130px;
+        position: relative;
+        top: 6px;
+    }
+
+    .map-type-selector{
+        float: right;
+    }
+
+    .map-container{
+        height: 90%;
+        position: relative;
+        .standby{
+            z-index: 9999;
+        }
+    }
+}

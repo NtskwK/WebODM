@@ -639,7 +639,7 @@ class ProjectListItem extends React.Component {
                       onClick={this.handleUpload}
                       ref={this.setRef("uploadButton")}>
                   <i className="glyphicon glyphicon-upload"></i>
-                  {_("Select Images and GCP")}
+                  选择图片和控制点文件
                 </button>
                 <button type="button" 
                       className="btn btn-default btn-sm"

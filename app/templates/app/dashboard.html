@@ -12,10 +12,20 @@
         </div>
 	<![endif]-->
 
+	<h3>欢迎 ☺</h3>
+
+
+	{% render_bundle 'GlobalMapView' attrs='async' %}
+	<div data-mapview 
+		{% for key, value in params %}
+			data-{{key}}="{{value}}"
+		{% endfor %}
+	></div>
+
 	{% if no_processingnodes %}
 		{% include "quota.html" %}
 
-		<h3>{% trans 'Welcome!' %} ☺</h3>
+
 		{% trans 'Add a Processing Node' as add_processing_node %}
 		{% with nodeodm_link='<a href="https://github.com/OpenDroneMap/NodeODM" target="_blank">NodeODM</a>' api_link='<a href="https://github.com/OpenDroneMap/NodeODM/blob/master/docs/index.adoc" target="_blank">API</a>' %}
 			<p>
@@ -28,17 +38,15 @@
 		{% include "quota.html" %}
 
 		{% if no_tasks %}
-			<h3>{% trans 'Welcome!' %} ☺</h3>
-			{% trans 'Select Images and GCP' as upload_images %}
 			<p>
-				{% blocktrans %}To create a map, press the "{{ upload_images }}" button, or drag and drop some images into a project.{% endblocktrans %}
+				创建工程后请导入图片和控制点文件。
 			</p>
 			<p>
 				<ul>
-					<li>{% trans 'You need at least 5 images, but 16-32 is typically the minimum.' %}</li>
-					<li>{% trans 'Images must overlap by 65% or more. Aim for 70-72%' %}</li>
-					<li>{% trans 'For great 3D, images must overlap by 83%' %}</li>
-					<li>{% gcp_docs_link as gcp_link %}{% blocktrans with link_start=gcp_link|safe link_end='</a>' %}A {{link_start}}GCP File{{link_end}} is optional, but can increase georeferencing accuracy{% endblocktrans %}</li>
+					<li>创建项目至少需要16张影像</li>
+					<li>影像的重叠度应当不小于70%</li>
+					<li>如果需要创建精密的3D模型，则重叠度应不小于80%</li>
+					<li>{% gcp_docs_link as gcp_link %}{% blocktrans with link_start=gcp_link|safe link_end='</a>' %}添加{{link_start}}控制点文件{{link_end}}能够提高模型的精度{% endblocktrans %}</li>
 				</ul>
 			</p>
 		{% endif %}

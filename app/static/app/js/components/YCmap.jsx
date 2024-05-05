@@ -30,7 +30,7 @@ import 'rbush';
 import '../vendor/leaflet/leaflet-markers-canvas';
 import { _ } from '../classes/gettext';
 
-class Map extends React.Component {
+class YCmap extends React.Component {
   static defaultProps = {
     showBackground: false,
     mapType: "orthophoto",
@@ -666,4 +666,4 @@ class Map extends React.Component {
   }
 }
 
-export default Map;
+export default YCmap;
