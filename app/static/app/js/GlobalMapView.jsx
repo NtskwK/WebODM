@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { _, interpolate } from './classes/gettext';
 import YCmap from './components/YCmap';
 
+
 class GlobalMapView extends React.Component {
   static defaultProps = {
     mapItems: [],
