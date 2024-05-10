@@ -516,16 +516,17 @@ class YCmap extends React.Component {
     // 地图切换
     // new AddOverlayCtrl().addTo(this.map);
 
-    this.map.fitBounds([
-     [25.062919746115805,
-     110.300640939831735],
-     [25.062825784981254,
-     110.300591558975154]]);
+    let defualtBounds = [
+     [25.062919746115805, 110.300640939831735],
+     [25.062825784981254, 110.300591558975154]];
     this.map.attributionControl.setPrefix("");
 
     this.setState({showLoading: true});
     this.loadImageryLayers(true).then(() => {
         this.setState({showLoading: false});
+
+        this.mapBounds = this.mapBounds? this.mapBounds:defualtBounds
+        console.log(this.mapBounds);
         this.map.fitBounds(this.mapBounds);
 
         this.map.on('click', e => {
@@ -631,10 +632,7 @@ class YCmap extends React.Component {
     return (
       <div style={{height: "100%"}} className="map">
         <ErrorMessage bind={[this, 'error']} />
-        <div className="opacity-slider theme-secondary hidden-xs">
-            {_("Opacity:")} <input type="range" step="1" value={this.state.opacity} onChange={this.updateOpacity} />
-        </div>
-
+        
         <Standby 
             message={_("Loading...")}
             show={this.state.showLoading}
