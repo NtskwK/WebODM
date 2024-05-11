@@ -2,6 +2,14 @@ import { _ } from './gettext';
 
 export default [
   {
+    attribution: "Map data: &copy; ArcGIS Maps",
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+    maxZoom: 17,
+    minZoom: 0,
+    label: _("ArcGIS Map Satellite"),
+    url: "//server.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png"
+  },
+  {
     attribution: "Map data: &copy; Amap Maps",
     subdomains: ["mt0", "mt1", "mt2", "mt3"],
     maxZoom: 17,

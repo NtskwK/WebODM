@@ -388,7 +388,7 @@ class YCmap extends React.Component {
       positionControl: true,
       zoomControl: false,
       minZoom: 0,
-      maxZoom: 16
+      maxZoom: 19
     });
 
     // For some reason, in production this class is not added (but we need it)
@@ -513,12 +513,88 @@ class YCmap extends React.Component {
         }
     });
 
-    // 地图切换
+    // 获取任务信息
+    function getTaskInfo(project_id, task_id){
+      return new Promise((resolve, reject) => {
+        $.getJSON(`/api/projects/${project_id}/tasks/${task_id}/dsm/tiles.json`)
+          .done(res => {
+            resolve(res);
+          })
+          .fail(err => {
+            resolve(null);
+            // reject(err);
+          })
+      })
+    }
+
+    function getTaskCenters(){
+      return new Promise((resolve, reject) => {
+        $.getJSON(`/api/projects/`)
+          .done(res => {
+            // let taskCenters = [[
+            //   0.998801818800906,
+            //   45.00858372314207
+            // ]];
+            let taskCenters = [];
+            // task_id不是按顺序来排的
+            let taskPromiseList = [];
+            for (let project of res) {
+              for (let task of project.tasks) {
+                let taskPromise = getTaskInfo(project.id, task).then(info => {
+                  // 提取中心点                  
+                  taskCenters.push(
+                    [(info.bounds[0]+info.bounds[2])/2,
+                     (info.bounds[1]+info.bounds[3])/2]
+                  );
+                });
+                taskPromiseList.push(taskPromise);
+              }
+            }
+            Promise.allSettled(taskPromiseList).then(() => {
+              resolve(taskCenters);
+            });  
+          })
+          .fail(err => {
+            reject(err);
+          });
+      });
+    }
+    
+    var taskIcon = L.icon({
+      iconUrl: "/static/app/js/icons/marker-camera.png",
+      iconSize: [41, 46],
+      iconAnchor: [17, 46],
+    });
+
+    getTaskCenters().then((points) =>{
+      let markers = [];
+      for(let s of points){
+        let marker = L.marker(
+          [s[1], s[0]],
+          { icon: taskIcon }
+        );
+        markers.push(marker);
+      }
+      L.layerGroup(markers).addTo(this.map);
+      if(points.length === 1){
+        const markerBounds = [
+          [[points[0][1],points[0][0]],
+          [points[0][1],points[0][0]]]
+        ];
+        this.map.fitBounds(markerBounds);
+      }
+    })
+  
+    // 添加shapefile图层
     // new AddOverlayCtrl().addTo(this.map);
 
-    let defualtBounds = [
-     [25.062919746115805, 110.300640939831735],
-     [25.062825784981254, 110.300591558975154]];
+    const defualtBounds = [
+     [25.069139746115805, 110.290210939831735],
+     [25.061465784981254, 110.300591558975154]];
+    // const defualtBounds = [
+    //   [45.00743659298843,0.9972951263722118],
+    //   [45.0097308532957,1.0003085112296002]
+    // ];
     this.map.attributionControl.setPrefix("");
 
     this.setState({showLoading: true});
@@ -526,7 +602,6 @@ class YCmap extends React.Component {
         this.setState({showLoading: false});
 
         this.mapBounds = this.mapBounds? this.mapBounds:defualtBounds
-        console.log(this.mapBounds);
         this.map.fitBounds(this.mapBounds);
 
         this.map.on('click', e => {
