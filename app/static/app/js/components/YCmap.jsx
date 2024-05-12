@@ -521,8 +521,7 @@ class YCmap extends React.Component {
             resolve(res);
           })
           .fail(err => {
-            resolve(null);
-            // reject(err);
+            reject(err);
           })
       })
     }
@@ -535,23 +534,20 @@ class YCmap extends React.Component {
             //   0.998801818800906,
             //   45.00858372314207
             // ]];
-            let taskCenters = [];
+            let taskInfos = [];
             // task_id不是按顺序来排的
             let taskPromiseList = [];
             for (let project of res) {
               for (let task of project.tasks) {
                 let taskPromise = getTaskInfo(project.id, task).then(info => {
                   // 提取中心点                  
-                  taskCenters.push(
-                    [(info.bounds[0]+info.bounds[2])/2,
-                     (info.bounds[1]+info.bounds[3])/2]
-                  );
+                  taskInfos.push(info);
                 });
                 taskPromiseList.push(taskPromise);
               }
             }
             Promise.allSettled(taskPromiseList).then(() => {
-              resolve(taskCenters);
+              resolve(taskInfos);
             });  
           })
           .fail(err => {
@@ -566,21 +562,29 @@ class YCmap extends React.Component {
       iconAnchor: [17, 46],
     });
 
-    getTaskCenters().then((points) =>{
+    getTaskCenters().then((infoList) =>{
       let markers = [];
-      for(let s of points){
+      console.log(infoList);
+      for(let task of infoList){
+        console.log(task);
         let marker = L.marker(
-          [s[1], s[0]],
+          [(task.bounds[1]+task.bounds[3])/2,
+            (task.bounds[0]+task.bounds[2])/2],
           { icon: taskIcon }
         );
         markers.push(marker);
       }
       L.layerGroup(markers).addTo(this.map);
-      if(points.length === 1){
-        const markerBounds = [
-          [[points[0][1],points[0][0]],
-          [points[0][1],points[0][0]]]
-        ];
+      console.log(markers);
+
+      if(infoList.length >= 1){
+        // 合并所有Bounds
+        const markerBounds = infoList.map((info) => {
+          return [[Math.min(info.bounds[1]),Math.min(info.bounds[0])],
+                  [Math.max(info.bounds[3]),Math.max(info.bounds[2])]];
+        });
+        
+        console.log(markerBounds);
         this.map.fitBounds(markerBounds);
       }
     })
