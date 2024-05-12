@@ -540,7 +540,11 @@ class YCmap extends React.Component {
             for (let project of res) {
               for (let task of project.tasks) {
                 let taskPromise = getTaskInfo(project.id, task).then(info => {
-                  // 提取中心点                  
+                  info.project = {
+                    name: project.name,
+                    description: project.description,
+                    created_at: project.created_at,
+                  };
                   taskInfos.push(info);
                 });
                 taskPromiseList.push(taskPromise);
@@ -564,14 +568,24 @@ class YCmap extends React.Component {
 
     getTaskCenters().then((infoList) =>{
       let markers = [];
-      console.log(infoList);
       for(let task of infoList){
         console.log(task);
+        // 将中心点作为标记点
         let marker = L.marker(
           [(task.bounds[1]+task.bounds[3])/2,
             (task.bounds[0]+task.bounds[2])/2],
           { icon: taskIcon }
         );
+        var popup = L.DomUtil.create('div', 'infoWindow');
+
+            popup.innerHTML = `<b>${task.project.name}</b>
+                               <br/>${task.name}
+                               <br/>创建时间：
+                               <br/>${task.project.created_at}
+                               <br/>${task.project.description}`;
+
+        marker.bindPopup(popup).openPopup();
+        // marker.bindPopup(``).openPopup();
         markers.push(marker);
       }
       L.layerGroup(markers).addTo(this.map);
@@ -584,7 +598,6 @@ class YCmap extends React.Component {
                   [Math.max(info.bounds[3]),Math.max(info.bounds[2])]];
         });
         
-        console.log(markerBounds);
         this.map.fitBounds(markerBounds);
       }
     })
