@@ -388,7 +388,7 @@ class Map extends React.Component {
       positionControl: true,
       zoomControl: false,
       minZoom: 0,
-      maxZoom: 16
+      maxZoom: 20
     });
 
     // For some reason, in production this class is not added (but we need it)

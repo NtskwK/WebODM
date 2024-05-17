@@ -20,13 +20,13 @@ class Theme(models.Model):
     # Similar to how discourse.org does it
     primary = ColorField(default='#2c3e50', help_text=_("Most text, icons, and borders."), verbose_name=_("Primary"))
     secondary = ColorField(default='#ffffff', help_text=_("The main background color, and text color of some buttons."), verbose_name=_("Secondary"))
-    tertiary = ColorField(default='#3498db', help_text=_("Navigation links."), verbose_name=_("Tertiary"))
+    tertiary = ColorField(default='#36DB5C', help_text=_("Navigation links."), verbose_name=_("Tertiary"))
 
     button_primary = ColorField(default='#2c3e50', help_text=_("Primary button color."), verbose_name=_("Button Primary"))
     button_default = ColorField(default='#95a5a6', help_text=_("Default button color."), verbose_name=_("Button Default"))
     button_danger = ColorField(default='#e74c3c', help_text=_("Delete button color."), verbose_name=_("Button Danger"))
 
-    header_background = ColorField(default='#3498db', help_text=_("Background color of the site's header."), verbose_name=_("Header Background"))
+    header_background = ColorField(default='#38DB7E', help_text=_("Background color of the site's header."), verbose_name=_("Header Background"))
     header_primary = ColorField(default='#ffffff', help_text=_("Text and icons in the site's header."), verbose_name=_("Header Primary"))
 
     border = ColorField(default='#e7e7e7', help_text=_("The color of most borders."), verbose_name=_("Border"))

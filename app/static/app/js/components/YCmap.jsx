@@ -571,7 +571,7 @@ class YCmap extends React.Component {
       for(let task of infoList){
         console.log(task);
         // 将中心点作为标记点
-        let marker = L.marker(
+        const marker = L.marker(
           [(task.bounds[1]+task.bounds[3])/2,
             (task.bounds[0]+task.bounds[2])/2],
           { icon: taskIcon }
