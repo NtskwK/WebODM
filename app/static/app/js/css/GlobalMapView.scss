@@ -1,5 +1,5 @@
 [data-mapview]{
-    height: calc(30vh);
+    height: calc(50vh);
 }
 
 .map-view{
@@ -19,7 +19,7 @@
     }
 
     .map-container{
-        height: 90%;
+        height: 100%;
         position: relative;
         .standby{
             z-index: 9999;

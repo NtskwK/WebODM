@@ -1,6 +1,13 @@
 import React from 'react';
 import './css/MapView.scss';
 import Map from './components/Map';
+import SensorList from './components/SensorList';
+import EditProjectDialog from './components/EditProjectDialog';
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom';
+import Utils from './classes/Utils';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { _, interpolate } from './classes/gettext';
@@ -24,6 +31,9 @@ class MapView extends React.Component {
 
   constructor(props){
     super(props);
+    
+    this.handleAddProject = this.handleAddProject.bind(this);
+    this.addNewProject = this.addNewProject.bind(this);
 
     let selectedMapType = props.selectedMapType;
 
@@ -82,6 +92,27 @@ class MapView extends React.Component {
     };
   }
 
+  handleAddProject(){
+    this.projectDialog.show();
+  }
+
+  addNewProject(project){
+    if (!project.name) return (new $.Deferred()).reject(_("Name field is required"));
+
+    return $.ajax({
+      url: `/api/projects/`,
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        name: project.name,
+        description: project.descr,
+        tags: project.tags
+      })
+    }).done(() => {
+      this.sensorList.refresh();
+    });
+  }
+
   render(){
     let mapTypeButtons = [
       {
@@ -109,7 +140,23 @@ class MapView extends React.Component {
     // If we have only one button, hide it...
     if (mapTypeButtons.length === 1) mapTypeButtons = [];
 
-    return (<div className="map-view">
+
+    const sensorList = ({ location, history }) => {
+      let q = Utils.queryParams(location);
+      if (q.page === undefined) q.page = 1;
+      else q.page = parseInt(q.page);
+
+      return <SensorList
+                source={`/api/projects/${Utils.toSearchQuery(q)}`}
+                ref={(domNode) => { this.sensorList = domNode; }} 
+                currentPage={q.page}
+                currentSearch={q.search}
+                history={history}
+                />;
+    };
+
+    return (
+      <div className="map-view">
         <div className="map-type-selector btn-group" role="group">
           {mapTypeButtons.map(mapType =>
             <button 
@@ -132,7 +179,28 @@ class MapView extends React.Component {
                 shareButtons={this.props.shareButtons}
             />
         </div>
-      </div>);
+        <div className='sensor-container'>
+          <Router basename="/dashboard">
+            <div>
+              <div className="text-right add-button">
+                <button type="button" 
+                        className="btn btn-primary btn-sm"
+                        onClick={this.handleAddProject}>
+                  <i className="glyphicon glyphicon-plus"></i>
+                  {"添加传感器"}
+                </button>
+              </div>
+
+              <EditProjectDialog 
+                saveAction={this.addNewProject}
+                ref={(domNode) => { this.projectDialog = domNode; }}
+                />
+              <Route path="/" component={sensorList} />
+            </div>
+          </Router>
+        </div>
+      </div>
+    );
   }
 }
 
