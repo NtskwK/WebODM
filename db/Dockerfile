@@ -43,14 +43,16 @@ RUN apt-get update; \
 	localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8; \
     # Build Postgres from source
 	mkdir /staging; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends wget gcc build-essential libproj-dev libgeos-dev libxml2-dev zlib1g-dev libreadline-dev; \ 
+	apt-get install -y --no-install-recommends python3 python3-dev libpython3-dev gcc build-essential libproj-dev libgeos-dev libxml2-dev zlib1g-dev libreadline-dev libpq-dev; \ 
 	cd /staging; \
 	wget --no-check-certificate -q https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgresql-$PG_VERSION.tar.gz; \
 	cd /staging; \
 	tar -zxf postgresql-$PG_VERSION.tar.gz; \
 	cd postgresql-$PG_VERSION; \
-	./configure; \
+	find / -name "Python.h";\
+	./configure --with-python --includedir=/usr/include/python3.8/ ; \
+	# ./configure --with-python --includedir=/usr/include/python3.8/ ; \
+	# ./configure --includedir=/usr/include/python3.8/ ; \
 	make -j$(nproc); \
 	make install; \
 	postgres --version; \

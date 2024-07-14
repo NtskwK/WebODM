@@ -48,13 +48,13 @@ class ProjectListItem extends React.Component {
 
     this.sortItems = [{
         key: "created_at",
-        label: _("Created on")
+        label: _("创建时间")
       },{
         key: "name",
-        label: _("Name")
+        label: _("名称")
       },{
         key: "tags",
-        label: _("Tags")
+        label: _("标签")
       }];
 
     this.toggleTaskList = this.toggleTaskList.bind(this);
@@ -279,7 +279,7 @@ class ProjectListItem extends React.Component {
                         this.setUploadState({error: interpolate(_('Cannot create new task. Invalid response from server: %(error)s'), { error: JSON.stringify(task) }) });
                     }
                   }).fail(() => {
-                    this.setUploadState({error: _("Cannot create new task. Please try again later.")});
+                    this.setUploadState({error: _("无法创建任务，请稍后重试……")});
                   });
             }else if (this.dz.getQueuedFiles() === 0){
                 // Done but didn't upload all?
@@ -413,7 +413,7 @@ class ProjectListItem extends React.Component {
             this.handleTaskCanceled();
         }
       }).fail(() => {
-        this.setState({error: _("Cannot create new task. Please try again later.")});
+        this.setState({error: _("无法创建任务，请稍后重试……")});
         this.handleTaskCanceled();
       });
   }
@@ -440,7 +440,7 @@ class ProjectListItem extends React.Component {
         this.setState({error: "", refreshing: true});
         deleteAction()
           .fail(e => {
-            this.setState({error: e.message || (e.responseJSON || {}).detail || e.responseText || _("Could not delete item")});
+            this.setState({error: e.message || (e.responseJSON || {}).detail || e.responseText || _("删除失败")});
           }).always(() => {
             this.setState({refreshing: false});
           });
@@ -600,7 +600,7 @@ class ProjectListItem extends React.Component {
     const numTasks = data.tasks.length;
     const canEdit = this.hasPermission("change");
     const userTags = Tags.userTags(data.tags);
-    let deleteWarning = _("All tasks, images and models associated with this project will be permanently deleted. Are you sure you want to continue?");
+    let deleteWarning = _("与此任务相关的所有信息，包括图像、地图和模型将被删除。你确定吗?");
     if (!data.owned) deleteWarning = _("This project was shared with you. It will not be deleted, but simply hidden from your dashboard. Continue?")
 
     return (
@@ -639,12 +639,12 @@ class ProjectListItem extends React.Component {
                       onClick={this.handleUpload}
                       ref={this.setRef("uploadButton")}>
                   <i className="glyphicon glyphicon-upload"></i>
-                  选择图片和控制点文件
+                  选择影像
                 </button>
                 <button type="button" 
                       className="btn btn-default btn-sm"
                       onClick={this.handleImportTask}>
-                  <i className="glyphicon glyphicon-import"></i> {_("Import")}
+                  <i className="glyphicon glyphicon-import"></i> {_("导入")}
                 </button>
                 {this.state.buttons.map((button, i) => <React.Fragment key={i}>{button}</React.Fragment>)}
               </div>
@@ -686,7 +686,7 @@ class ProjectListItem extends React.Component {
                   : ""}
                   <i className='fa fa-filter'></i>
                   <a href="javascript:void(0);" onClick={this.onOpenFilter} className="dropdown-toggle" data-toggle-outside data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {_("Filter")}
+                    {_("筛选")}
                   </a>
                   <ul className="dropdown-menu dropdown-menu-right filter-dropdown">
                   <li className="filter-text-container">
@@ -712,7 +712,7 @@ class ProjectListItem extends React.Component {
                 <div className="btn-group">
                   <i className='fa fa-sort-alpha-down'></i>
                   <a href="javascript:void(0);" className="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {_("Sort")}
+                    {"排序"}
                   </a>
                   <SortPanel selected="-created_at" items={this.sortItems} onChange={this.sortChanged} />
                 </div>
@@ -721,19 +721,19 @@ class ProjectListItem extends React.Component {
               {numTasks > 0 ? 
                 [<i key="edit-icon" className='fa fa-globe'></i>
                 ,<a key="edit-text" href="javascript:void(0);" onClick={this.viewMap}>
-                  {_("View Map")}
+                  {"查看项目地图"}
                 </a>]
               : ""}
               
             {canEdit ? 
                 [<i key="edit-icon" className='far fa-edit'></i>
-                ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleEditProject}> {_("Edit")}
+                ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleEditProject}> {"编辑"}
                 </a>]
             : ""}
 
             {!canEdit && !data.owned ? 
               [<i key="edit-icon" className='far fa-eye-slash'></i>
-              ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleHideProject(deleteWarning, this.handleDelete)}> {_("Delete")}
+              ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleHideProject(deleteWarning, this.handleDelete)}> {"删除"}
               </a>]
             : ""}
 
