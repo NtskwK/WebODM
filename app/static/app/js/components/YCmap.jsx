@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'ReactDOM';
 import '../css/Map.scss';
 import 'leaflet/dist/leaflet.css';
-import Leaflet from 'leaflet';
-import async from 'async';
+import Leaflet, { latLng } from 'leaflet';
+import async, { log } from 'async';
 import '../vendor/leaflet/L.Control.MousePosition.css';
 import '../vendor/leaflet/L.Control.MousePosition';
 import '../vendor/leaflet/Leaflet.Autolayers/css/leaflet.auto-layers.css';
@@ -516,7 +516,8 @@ class YCmap extends React.Component {
     // 获取任务信息
     function getTaskInfo(project_id, task_id){
       return new Promise((resolve, reject) => {
-        $.getJSON(`/api/projects/${project_id}/tasks/${task_id}/dsm/tiles.json`)
+        // $.getJSON(`/api/projects/${project_id}/tasks/${task_id}/dsm/tiles.json`)
+        $.getJSON(`/api/projects/1/tasks/da1cb9bf-1ee2-4149-aab3-e04d5e294fd5/assets/images.json`)
           .done(res => {
             resolve(res);
           })
@@ -568,18 +569,31 @@ class YCmap extends React.Component {
 
     getTaskCenters().then((infoList) =>{
       let markers = [];
+
       for(let task of infoList){
         console.log(task);
+        
+
+        let lat = 0;
+        let lng = 0;
         // 将中心点作为标记点
+        for (const img of task){
+           lat = lat + img.latitude;
+           lng = lng + img.longitude;
+        }
+
+        const markerPoint = [lat/task.length, lng/task.length];
+
+        console.log(markerPoint);
+
         const marker = L.marker(
-          [(task.bounds[1]+task.bounds[3])/2,
-            (task.bounds[0]+task.bounds[2])/2],
+          markerPoint,
+          // [task.latitude,task.longitude],
           { icon: taskIcon }
         );
         var popup = L.DomUtil.create('div', 'infoWindow');
 
             popup.innerHTML = `<b>${task.project.name}</b>
-                               <br/>${task.name}
                                <br/>创建时间：
                                <br/>${task.project.created_at}
                                <br/>${task.project.description}`;
@@ -593,9 +607,26 @@ class YCmap extends React.Component {
 
       if(infoList.length >= 1){
         // 合并所有Bounds
+        console.log(infoList);
+        
+        var maxLat=-90;
+        var maxLng=-180;
+        var minLat=90;
+        var minLng=180;
+        for (let project of infoList){
+          for (let task of project) {
+            maxLat = task.latitude > maxLat? task.latitude: maxLat;
+            maxLng = task.longitude > maxLng? task.longitude: maxLng;
+            minLat = task.latitude < minLat? task.latitude: minLat;
+            minLng = task.longitude < minLng? task.longitude: minLng;
+          }
+        }
+
+        console.log(minLat, maxLat, minLng, maxLng);
+
         const markerBounds = infoList.map((info) => {
-          return [[Math.min(info.bounds[1]),Math.min(info.bounds[0])],
-                  [Math.max(info.bounds[3]),Math.max(info.bounds[2])]];
+          return [[minLat,minLng],
+                  [maxLat,maxLng]];
         });
         
         this.map.fitBounds(markerBounds);
@@ -603,7 +634,7 @@ class YCmap extends React.Component {
     })
   
     // 添加shapefile图层
-    // new AddOverlayCtrl().addTo(this.map);
+    new AddOverlayCtrl().addTo(this.map);
 
     const defualtBounds = [
      [25.069139746115805, 110.290210939831735],

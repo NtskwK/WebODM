@@ -105,3 +105,4 @@ dpkg/build
 dpkg/deb
 .secret_key
 app/migrations/*
+app/static/app/bundles/*
