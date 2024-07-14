@@ -44,13 +44,13 @@ RUN apt-get update; \
     # Build Postgres from source
 	mkdir /staging; \
 	apt-get update; \
-	apt-get install -y --no-install-recommends wget gcc build-essential libproj-dev libgeos-dev libxml2-dev zlib1g-dev libreadline-dev; \ 
+	apt-get install -y --no-install-recommends wget python python3 python3-dev libpython3-dev gcc build-essential libproj-dev libgeos-dev libxml2-dev zlib1g-dev libreadline-dev libpq-dev; \ 
 	cd /staging; \
 	wget --no-check-certificate -q https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgresql-$PG_VERSION.tar.gz; \
 	cd /staging; \
 	tar -zxf postgresql-$PG_VERSION.tar.gz; \
 	cd postgresql-$PG_VERSION; \
-	./configure; \
+	./configure --with-python; \
 	make -j$(nproc); \
 	make install; \
 	postgres --version; \
