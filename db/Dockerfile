@@ -31,9 +31,10 @@ RUN apt-get update; \
     # https://github.com/tianon/gosu/releases
 	apt-get update; \
 	apt-get install -y --no-install-recommends wget; \
-	rm -rf /var/lib/apt/lists/*; \
+	# rm -rf /var/lib/apt/lists/*; \
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-	wget --no-check-certificate -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+	# wget --no-check-certificate -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+	wget --no-check-certificate -O /usr/local/bin/gosu "https://gh-proxy.natsuu.top/https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
 	chmod +x /usr/local/bin/gosu; \
 	gosu --version; \
 	gosu nobody true; \
@@ -45,14 +46,13 @@ RUN apt-get update; \
 	mkdir /staging; \
 	apt-get install -y --no-install-recommends python3 python3-dev libpython3-dev gcc build-essential libproj-dev libgeos-dev libxml2-dev zlib1g-dev libreadline-dev libpq-dev; \ 
 	cd /staging; \
-	wget --no-check-certificate -q https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgresql-$PG_VERSION.tar.gz; \
+	# wget --no-check-certificate -q https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgresql-$PG_VERSION.tar.gz; \
+	wget --no-check-certificate -q https://mirrors.huaweicloud.com/postgresql/source/v$PG_VERSION/postgresql-$PG_VERSION.tar.gz; \
 	cd /staging; \
 	tar -zxf postgresql-$PG_VERSION.tar.gz; \
 	cd postgresql-$PG_VERSION; \
 	find / -name "Python.h";\
 	./configure --with-python --includedir=/usr/include/python3.8/ ; \
-	# ./configure --with-python --includedir=/usr/include/python3.8/ ; \
-	# ./configure --includedir=/usr/include/python3.8/ ; \
 	make -j$(nproc); \
 	make install; \
 	postgres --version; \
@@ -74,8 +74,9 @@ RUN apt-get update; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends libgdal-dev libjson-c-dev; \
 	cd /staging; \
-	wget --no-check-certificate -q https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgis-$POSTGIS_VERSION.tar.gz; \
-	wget --no-check-certificate -q -O /usr/include/json-c/json_object_private.h https://raw.githubusercontent.com/json-c/json-c/json-c-0.13/json_object_private.h; \
+	# wget --no-check-certificate -q https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgis-$POSTGIS_VERSION.tar.gz; \
+	wget --no-check-certificate -q https://gh-proxy.natsuu.top/https://github.com/OpenDroneMap/WebODM/releases/download/v1.9.2/postgis-$POSTGIS_VERSION.tar.gz; \
+	wget --no-check-certificate -q -O /usr/include/json-c/json_object_private.h https://gh-proxy.natsuu.top/https://raw.githubusercontent.com/json-c/json-c/json-c-0.13/json_object_private.h; \
 	tar -zxf postgis-$POSTGIS_VERSION.tar.gz; \
 	sed -i 's/#error.*/#define ACCEPT_USE_OF_DEPRECATED_PROJ_API_H 1/' /usr/include/proj_api.h; \
 	cd /staging/postgis-$POSTGIS_VERSION; \

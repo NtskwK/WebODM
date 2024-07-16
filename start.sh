@@ -60,7 +60,8 @@ if [ "$1" = "--setup-devenv" ] || [ "$2" = "--setup-devenv" ]; then
 fi
 
 echo Running migrations
-python manage.py migrate
+python manage.py makemigrations app
+python manage.py migrate app
 
 if [[ "$WO_DEFAULT_NODES" > 0 ]]; then
     i=0
