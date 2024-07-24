@@ -70,4 +70,4 @@ django-cors-headers
 django-colorfield
 django-imagekit
 django-codemirror2
-psycopg2
+psycopg2==2.8

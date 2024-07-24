@@ -488,9 +488,10 @@ down(){
 
 rebuild(){
 	run "$docker_compose down --remove-orphans"
-	run "rm -fr node_modules/ || sudo rm -fr node_modules/"
-	run "rm -fr nodeodm/external/NodeODM || sudo rm -fr nodeodm/external/NodeODM"
-	run "$docker_compose -f docker-compose.yml -f docker-compose.build.yml build --no-cache"
+	# run "rm -fr node_modules/ || sudo rm -fr node_modules/"
+	# run "rm -fr nodeodm/external/NodeODM || sudo rm -fr nodeodm/external/NodeODM"
+	# run "$docker_compose -f docker-compose.yml -f docker-compose.build.yml build --no-cache"
+	run "$docker_compose -f docker-compose.yml -f docker-compose.build.yml build"
 	#run "docker images --no-trunc -aqf \"dangling=true\" | xargs docker rmi"
 	echo -e "\033[1mDone!\033[0m You can now start WebODM by running $0 start"
 }

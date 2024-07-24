@@ -1,6 +1,5 @@
 # This configuration does not include a processing node
 # Which makes for faster setup times
-version: '2.1'
 volumes:
   dbdata:
   appmedia:
@@ -11,7 +10,7 @@ services:
     expose:
       - "5432"
     ports:
-      - "5431:5432"
+      - "5432:5432"
     volumes:
       - ${WO_DB_DIR}:/var/lib/postgresql/data:Z
     restart: unless-stopped
@@ -43,6 +42,8 @@ services:
     container_name: broker
     restart: unless-stopped
     oom_score_adj: -500
+    ports:
+      - "6379:6379"
   worker:
     image: opendronemap/webodm_webapp
     container_name: worker
