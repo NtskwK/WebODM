@@ -42,14 +42,30 @@ if [ "$1" = "--setup-devenv" ] || [ "$2" = "--setup-devenv" ]; then
     git submodule update --init
     
     echo Setup npm dependencies...
-    npm install
+    # npm install
 
     cd nodeodm/external/NodeODM
-    npm install
+    # npm install
 
     cd /webodm
 
     echo Setup pip requirements...
+    status=$(curl --max-time 300 -L -s -o /dev/null -w "%{http_code}" "https://google.com")
+
+    if [[ "$status" = "200" ]]; then
+        echo -e "\033[92m"      
+        echo "Congratulations! └@(･◡･)@┐"
+        echo ==========================
+        echo -e "\033[39m"
+        echo "Google is enable!"
+    else    
+        echo -e "\033[93m"
+        echo "Something doesn't look right! ¯\_(ツ)_/¯"
+        echo -e "\033[39m"
+        echo -e "Try to use mirror in pypi.tuna.tsinghua.edu.cn"
+        echo -e "\033[39m"
+        pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+    fi
     pip install -r requirements.txt
 
     echo Build translations...
@@ -60,8 +76,8 @@ if [ "$1" = "--setup-devenv" ] || [ "$2" = "--setup-devenv" ]; then
 fi
 
 echo Running migrations
-python manage.py makemigrations app
-python manage.py migrate app
+python manage.py makemigrations app admin guardian sessions
+python manage.py migrate
 
 if [[ "$WO_DEFAULT_NODES" > 0 ]]; then
     i=0

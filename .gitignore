@@ -84,6 +84,8 @@ celerybeat.pid
 # virtualenv
 venv/
 ENV/
+wsl_env/*
+win_env/*
 
 # Spyder project settings
 .spyderproject
@@ -95,6 +97,7 @@ node_modules/
 webpack-stats.json
 pip-selfcheck.json
 .idea/
+.vscode/
 package-lock.json
 .cronenv
 .initialized
