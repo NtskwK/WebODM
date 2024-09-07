@@ -14,6 +14,7 @@ from .potree import Scene, CameraView
 from .workers import CheckTask, GetTaskResult
 from .users import UsersList
 from .externalauth import ExternalTokenAuth
+from .yc_monitor import YcMonitorCategoryViewSet, YcMonitorDataViewSet, YcMonitorPointViewSet, YcProjectViewSet
 from webodm import settings
 
 router = routers.DefaultRouter()
@@ -29,12 +30,19 @@ admin_router.register(r'admin/users', AdminUserViewSet, basename='admin-users')
 admin_router.register(r'admin/groups', AdminGroupViewSet, basename='admin-groups')
 admin_router.register(r'admin/profiles', AdminProfileViewSet, basename='admin-groups')
 
+yc_router = routers.DefaultRouter()
+yc_router.register(r'yc', YcProjectViewSet, basename='yc-project')
+yc_router.register(r'yc/monitor/categories', YcMonitorCategoryViewSet, basename='yc-monitor-category')
+yc_router.register(r'yc/monitor/points', YcMonitorPointViewSet, basename='yc-monitor-point')
+yc_router.register(r'yc/monitor/data', YcMonitorDataViewSet, basename='yc-monitor-data')
+
 urlpatterns = [
     url(r'processingnodes/options/$', ProcessingNodeOptionsView.as_view()),
 
     url(r'^', include(router.urls)),
     url(r'^', include(tasks_router.urls)),
     url(r'^', include(admin_router.urls)),
+    url(r'^', include(yc_router.urls)),
 
     url(r'projects/(?P<project_pk>[^/.]+)/tasks/(?P<pk>[^/.]+)/(?P<tile_type>orthophoto|dsm|dtm)/tiles\.json$', TileJson.as_view()),
     url(r'projects/(?P<project_pk>[^/.]+)/tasks/(?P<pk>[^/.]+)/(?P<tile_type>orthophoto|dsm|dtm)/bounds$', Bounds.as_view()),
