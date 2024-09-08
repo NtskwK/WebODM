@@ -76,7 +76,7 @@ if [ "$1" = "--setup-devenv" ] || [ "$2" = "--setup-devenv" ]; then
 fi
 
 echo Running migrations
-python manage.py makemigrations app admin guardian sessions
+python manage.py makemigrations app
 python manage.py migrate
 
 if [[ "$WO_DEFAULT_NODES" > 0 ]]; then
