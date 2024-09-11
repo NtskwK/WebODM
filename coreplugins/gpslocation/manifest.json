@@ -1,7 +1,13 @@
 {
+<<<<<<<< HEAD:coreplugins/gpslocation/manifest.json
 	"name": "GPS Location",
 	"webodmMinVersion": "0.5.0",
 	"description": "Add a GPS location button to the 2D map view",
+========
+	"name": "Lightning",
+	"webodmMinVersion": "0.7.1",
+	"description": "Process in the cloud with webodm.net",
+>>>>>>>> 0aafc968e0142ed1e10595217ab986c6b7fb0e9c:coreplugins/lightning/manifest.json
 	"version": "1.0.0",
 	"author": "Piero Toffanin",
 	"email": "pt@masseranolabs.com",

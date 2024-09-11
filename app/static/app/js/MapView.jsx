@@ -174,8 +174,7 @@ class MapView extends React.Component {
     // If we have only one button, hide it...
     if (mapTypeButtons.length === 1) mapTypeButtons = [];
 
-    return (
-      <div className="map-view">
+    return (<div className="map-view">
         <div className="map-view-header">
           {this.props.title ?
             <h3 className="map-title" title={this.props.title}><i className="fa fa-globe"></i> {this.props.title}</h3>
