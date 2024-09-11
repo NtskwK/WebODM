@@ -21,22 +21,18 @@ RUN printf "deb http://mirrors.ustc.edu.cn/ubuntu-old-releases/ubuntu/ hirsute m
             \ndeb http://mirrors.ustc.edu.cn/ubuntu-old-releases/ubuntu/ hirsute-backports main restricted universe multiverse" > /etc/apt/sources.list
 
 # Install Node.js using new Node install method
-RUN apt-get -qq update && apt-get -qq -y upgrade && apt-get -qq update && apt-get -qq install -y --no-install-recommends wget curl && \
-    apt-get install -y ca-certificates gnupg && \
+RUN apt-get -qq update && apt-get -o Acquire::Retries=3 -qq install -y --no-install-recommends wget curl && \
+    apt-get -o Acquire::Retries=3 install -y ca-certificates gnupg && \
     mkdir -p /etc/apt/keyrings && \
     curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
     NODE_MAJOR=20 && \
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
-    apt-get -qq update && apt-get -qq install -y nodejs && \
+    apt-get -o Acquire::Retries=3 -qq update && apt-get -o Acquire::Retries=3 -qq install -y nodejs && \
     # Install Python3, GDAL, PDAL, nginx, letsencrypt, psql
-    apt-get update && \
-    apt-get -qq update && apt-get -qq --fix-broken install -y --no-install-recommends --fix-missing python3 python3-pip python3-setuptools python3-wheel git g++ python3-dev python2.7-dev  && \
-    apt-get -qq update && apt-get -qq --fix-broken install -y --no-install-recommends --fix-missing libpq-dev binutils libproj-dev gdal-bin pdal libgdal-dev python3-gdal nginx certbot gettext-base cron postgresql-client-13 gettext tzdata && \
+    apt-get -o Acquire::Retries=3 -qq update && apt-get -o Acquire::Retries=3 -qq install -y --no-install-recommends python3 python3-pip python3-setuptools python3-wheel git g++ python3-dev python2.7-dev libpq-dev binutils libproj-dev gdal-bin pdal libgdal-dev python3-gdal nginx certbot gettext-base cron postgresql-client-13 gettext tzdata && \
     update-alternatives --install /usr/bin/python python /usr/bin/python2.7 1 && update-alternatives --install /usr/bin/python python /usr/bin/python3.9 2 && \
     # Install pip reqs
-    pip config set global.index-url https://mirror.sjtu.edu.cn/pypi/web/simple && \
     pip install pip==24.0 && pip install -r requirements.txt "boto3==1.14.14" && \
-    pip install -r requirements.txt "boto3==1.14.14" && \
     # Setup cron
     ln -s /webodm/nginx/crontab /var/spool/cron/crontabs/root && chmod 0644 /webodm/nginx/crontab && service cron start && chmod +x /webodm/nginx/letsencrypt-autogen.sh && \
     /webodm/nodeodm/setup.sh && /webodm/nodeodm/cleanup.sh && cd /webodm && \
