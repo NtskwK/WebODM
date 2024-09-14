@@ -63,5 +63,5 @@ class MonitorCategory(models.Model):
     enable = models.DateField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'yc_monitor_category'

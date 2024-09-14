@@ -4,8 +4,7 @@ from datetime import datetime
 from django.contrib.gis.gdal import DataSource
 from django.contrib.gis.utils import LayerMapping
 
-from rest_framework import permissions
-from rest_framework import viewsets, status
+from rest_framework import permissions, viewsets, status, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -27,9 +26,14 @@ class isAdminUserorReadOnly(permissions.BasePermission):
             return True
         return request.user.is_staff and self.IS_SINGLE_CLIENT == False
 
+class YcPolygonSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = YcPolygon
+        fields = '__all__'
 
 class YcPolygonViewSet(viewsets.ModelViewSet):
     queryset = YcProject.objects.all()
+    serializer_class = YcPolygonSerializer
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:

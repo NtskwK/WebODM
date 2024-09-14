@@ -23,5 +23,5 @@ class YcProject(models.Model):
     description = models.CharField(max_length=256, blank=True, null=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'yc_project'

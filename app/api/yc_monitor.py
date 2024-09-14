@@ -1,5 +1,4 @@
-from rest_framework import viewsets, status
-from rest_framework import permissions
+from rest_framework import viewsets, status, permissions, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
@@ -20,10 +19,16 @@ class isAdminUserorReadOnly(permissions.BasePermission):
 
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_staff and self.IS_SINGLE_CLIENT == False
+        return request.user.is_staff and self.IS_SINGLE_CLIENT == True
+
+class YcProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = YcProject
+        fields = '__all__' 
 
 class YcProjectViewSet(viewsets.ModelViewSet):
     
+    serializer_class = YcProjectSerializer
     queryset = YcProject.objects.all()
     
     def get_permissions(self):
@@ -37,10 +42,16 @@ class YcProjectViewSet(viewsets.ModelViewSet):
         # instance.delete()
         instance.is_delete = True
         instance.save()
-            
+
+class MonitorPointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = YcProject
+        fields = '__all__' 
+
 class YcMonitorPointViewSet(viewsets.ModelViewSet):
     
     queryset = MonitorPoint.objects.all()
+    serializer_class = MonitorPointSerializer
     permission_classes = [isAdminUserorReadOnly]
     
     def perform_destroy(self, instance):
@@ -48,9 +59,16 @@ class YcMonitorPointViewSet(viewsets.ModelViewSet):
         instance.is_delete = True
         instance.save()
 
+class YcMonitorCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = YcProject
+        fields = '__all__' 
+
+
 class YcMonitorCategoryViewSet(viewsets.ModelViewSet):
     
     queryset = MonitorCategory.objects.all()
+    serializer_class = YcMonitorCategorySerializer
     permission_classes = [isAdminUserorReadOnly]
     
     def retrieve(self, request, *args, **kwargs):
@@ -79,10 +97,16 @@ class YcMonitorCategoryViewSet(viewsets.ModelViewSet):
         instance.is_delete = True
         instance.save()
         return Response({'message': '删除成功'}, status=status.HTTP_200_OK)
-    
+
+class YcMonitorDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = MonitorData
+        fields = '__all__'
+
 class YcMonitorDataViewSet(viewsets.ModelViewSet):
     
     queryset = MonitorData.objects.all()
+    serializer_class = YcMonitorDataSerializer
     permission_classes = [isAdminUserorReadOnly]
     
     def update(self, request, *args, **kwargs):

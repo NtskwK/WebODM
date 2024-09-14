@@ -8,8 +8,25 @@
 from django.contrib.gis.db import models
 
 from .yc_monitor_category import MonitorCategory
+from .project import Project
 
 class MonitorPoint(models.Model):
+    project_id = models.ForeignKey(Project ,blank=True, null=True, on_delete=models.CASCADE)
+    valid_id = models.IntegerField(default=0)
+    sensor_iden = models.CharField(max_length=20, blank=True, null=True)
+    category_id = models.ForeignKey(MonitorCategory, blank=True, null=True, on_delete=models.CASCADE)
+    pos_y = models.IntegerField(blank=True, null=True)
+    pos_x = models.IntegerField(blank=True, null=True)
+    point_iden = models.CharField(max_length=20, blank=True, null=True)
+    point_depth = models.FloatField(blank=True, null=True)
+    monitor_date = models.DateTimeField(blank=True, null=True)
+    init_date = models.DateField(blank=True, null=True)
+    extra_channel = models.IntegerField(blank=True, null=True)
+    dtu_id = models.IntegerField(blank=True, null=True)
+    device_code = models.CharField(max_length=20, blank=True, null=True)
+    device_address = models.CharField(max_length=128, blank=True, null=True)
+    channel = models.IntegerField(blank=True, null=True)
+    alarm_level = models.IntegerField(blank=True, null=True)
     raw1_init = models.FloatField(blank=True, null=True)
     raw1_last = models.FloatField(blank=True, null=True)
     raw2_init = models.FloatField(blank=True, null=True)
@@ -32,22 +49,7 @@ class MonitorPoint(models.Model):
     res3_last = models.FloatField(blank=True, null=True)
     res4_init = models.FloatField(blank=True, null=True)
     res4_last = models.FloatField(blank=True, null=True)
-    valid_id = models.IntegerField(default=0)
-    sensor_iden = models.CharField(max_length=20, blank=True, null=True)
-    category_id = models.ForeignKey(MonitorCategory, blank=True, null=True, on_delete=models.CASCADE)
-    pos_y = models.IntegerField(blank=True, null=True)
-    pos_x = models.IntegerField(blank=True, null=True)
-    point_iden = models.CharField(max_length=20, blank=True, null=True)
-    point_depth = models.FloatField(blank=True, null=True)
-    monitor_date = models.DateTimeField(blank=True, null=True)
-    init_date = models.DateField(blank=True, null=True)
-    extra_channel = models.IntegerField(blank=True, null=True)
-    dtu_id = models.IntegerField(blank=True, null=True)
-    device_code = models.CharField(max_length=20, blank=True, null=True)
-    device_address = models.CharField(max_length=128, blank=True, null=True)
-    channel = models.IntegerField(blank=True, null=True)
-    alarm_level = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'yc_monitor_point'

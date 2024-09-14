@@ -21,4 +21,5 @@ class MonitorData(models.Model):
     vo3 = models.FloatField(blank=True,null=True)
     
     class Meta:
+        # managed = False
         db_table = 'yc_monitor_data'
