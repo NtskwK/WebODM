@@ -11,6 +11,7 @@ from .yc_monitor_category import MonitorCategory
 from .project import Project
 
 class MonitorPoint(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True)
     project_id = models.ForeignKey(Project ,blank=True, null=True, on_delete=models.CASCADE)
     valid_id = models.IntegerField(default=0)
     sensor_iden = models.CharField(max_length=20, blank=True, null=True)

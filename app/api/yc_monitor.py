@@ -1,12 +1,21 @@
-from rest_framework import viewsets, status, permissions, serializers
+from django.views.decorators.csrf import csrf_exempt
+
+from rest_framework import viewsets, status, permissions, serializers, mixins
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.decorators import action
+
+from django_filters import rest_framework as filters
 
 from app.models.yc_monitor_category import MonitorCategory
 from app.models.yc_monitor_data import MonitorData
 from app.models.yc_monitor_point import MonitorPoint
 from app.models.yc_project import YcProject
+
+import logging
+
+logger = logging.getLogger('django')
 
 class isAdminUserorReadOnly(permissions.BasePermission):
     
@@ -23,14 +32,13 @@ class isAdminUserorReadOnly(permissions.BasePermission):
 
 class YcProjectSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = YcProject
-        fields = '__all__' 
+        model = YcProject
+        fields = '__all__'
 
 class YcProjectViewSet(viewsets.ModelViewSet):
-    
-    serializer_class = YcProjectSerializer
     queryset = YcProject.objects.all()
-    
+    serializer_class = YcProjectSerializer
+
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
             permission_classes = [IsAuthenticated]
@@ -45,15 +53,21 @@ class YcProjectViewSet(viewsets.ModelViewSet):
 
 class MonitorPointSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = YcProject
-        fields = '__all__' 
+        model = MonitorPoint
+        fields = '__all__'
+
+class YcMonitorFilter(filters.FilterSet):
+    class Meta:
+        model = MonitorPoint
+        fields = ['id', 'name', 'project_id', 'category_id']
 
 class YcMonitorPointViewSet(viewsets.ModelViewSet):
     
     queryset = MonitorPoint.objects.all()
     serializer_class = MonitorPointSerializer
     permission_classes = [isAdminUserorReadOnly]
-    
+    filterset_class = YcMonitorFilter
+
     def perform_destroy(self, instance):
         # instance.delete()
         instance.is_delete = True
@@ -61,15 +75,20 @@ class YcMonitorPointViewSet(viewsets.ModelViewSet):
 
 class YcMonitorCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model  = YcProject
-        fields = '__all__' 
+        model = YcProject
+        fields = '__all__'
 
+class YcMonitorCategoryFilter(filters.FilterSet):
+    class Meta:
+        model = MonitorCategory
+        fields = ['id', 'remark', 'enable', 'monitor_date_last']
 
 class YcMonitorCategoryViewSet(viewsets.ModelViewSet):
     
     queryset = MonitorCategory.objects.all()
     serializer_class = YcMonitorCategorySerializer
     permission_classes = [isAdminUserorReadOnly]
+    filterset_class = YcMonitorCategoryFilter
     
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -100,14 +119,20 @@ class YcMonitorCategoryViewSet(viewsets.ModelViewSet):
 
 class YcMonitorDataSerializer(serializers.ModelSerializer):
     class Meta:
-        model  = MonitorData
+        model = MonitorData
         fields = '__all__'
+
+class YcMonitorDataFilter(filters.FilterSet):
+    class Meta:
+        model = MonitorData
+        fields = ['monitor_date', 'monitor_id', 'category_id', 'monitor_batch']
 
 class YcMonitorDataViewSet(viewsets.ModelViewSet):
     
     queryset = MonitorData.objects.all()
     serializer_class = YcMonitorDataSerializer
     permission_classes = [isAdminUserorReadOnly]
+    filterset_class = YcMonitorDataFilter
     
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)

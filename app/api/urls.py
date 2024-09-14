@@ -15,6 +15,7 @@ from .workers import CheckTask, GetTaskResult
 from .users import UsersList
 from .externalauth import ExternalTokenAuth
 from .yc_monitor import YcMonitorCategoryViewSet, YcMonitorDataViewSet, YcMonitorPointViewSet, YcProjectViewSet
+from .yc_polygon import YcPolygonViewSet
 from webodm import settings
 
 router = routers.DefaultRouter()
@@ -32,10 +33,11 @@ admin_router.register(r'admin/profiles', AdminProfileViewSet, basename='admin-gr
 
 yc_router = routers.DefaultRouter()
 yc_router.register(r'yc', YcProjectViewSet, basename='yc-project')
-yc_router.register(r'yc/polygon', YcProjectViewSet, basename='yc-project')
-yc_router.register(r'yc/monitor/categories', YcMonitorCategoryViewSet, basename='yc-monitor-category')
-yc_router.register(r'yc/monitor/points', YcMonitorPointViewSet, basename='yc-monitor-point')
-yc_router.register(r'yc/monitor/data', YcMonitorDataViewSet, basename='yc-monitor-data')
+yc_router.register(r'monitors', YcMonitorPointViewSet, basename='yc-monitor-point')
+yc_router.register(r'polygons', YcPolygonViewSet, basename='yc-project')
+yc_router.register(r'categories', YcMonitorCategoryViewSet, basename='yc-monitor-category')
+yc_router.register(r'ycdata', YcMonitorDataViewSet, basename='yc-monitor-data')
+
 
 urlpatterns = [
     url(r'processingnodes/options/$', ProcessingNodeOptionsView.as_view()),
