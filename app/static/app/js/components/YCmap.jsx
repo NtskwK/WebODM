@@ -4,8 +4,6 @@ import '../css/Map.scss';
 import 'leaflet/dist/leaflet.css';
 import Leaflet, { latLng } from 'leaflet';
 import async, { log } from 'async';
-import '../vendor/leaflet/L.Control.MousePosition.css';
-import '../vendor/leaflet/L.Control.MousePosition';
 import '../vendor/leaflet/Leaflet.Autolayers/css/leaflet.auto-layers.css';
 import '../vendor/leaflet/Leaflet.Autolayers/leaflet-autolayers';
 // import '../vendor/leaflet/L.TileLayer.NoGap';
