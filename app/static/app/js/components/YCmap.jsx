@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'ReactDOM';
 import '../css/Map.scss';
 import 'leaflet/dist/leaflet.css';
-import Leaflet, { latLng } from 'leaflet';
-import async, { log } from 'async';
+import Leaflet from 'leaflet';
+import async from 'async';
 import '../vendor/leaflet/Leaflet.Autolayers/css/leaflet.auto-layers.css';
 import '../vendor/leaflet/Leaflet.Autolayers/leaflet-autolayers';
 // import '../vendor/leaflet/L.TileLayer.NoGap';
@@ -514,8 +514,7 @@ class YCmap extends React.Component {
     // 获取任务信息
     function getTaskInfo(project_id, task_id){
       return new Promise((resolve, reject) => {
-        // $.getJSON(`/api/projects/${project_id}/tasks/${task_id}/dsm/tiles.json`)
-        $.getJSON(`/api/projects/1/tasks/da1cb9bf-1ee2-4149-aab3-e04d5e294fd5/assets/images.json`)
+        $.getJSON(`/api/projects/${project_id}/tasks/${task_id}/orthophoto/metadata`)
           .done(res => {
             resolve(res);
           })
@@ -529,10 +528,6 @@ class YCmap extends React.Component {
       return new Promise((resolve, reject) => {
         $.getJSON(`/api/projects/`)
           .done(res => {
-            // let taskCenters = [[
-            //   0.998801818800906,
-            //   45.00858372314207
-            // ]];
             let taskInfos = [];
             // task_id不是按顺序来排的
             let taskPromiseList = [];
@@ -541,6 +536,7 @@ class YCmap extends React.Component {
                 let taskPromise = getTaskInfo(project.id, task).then(info => {
                   info.project = {
                     name: project.name,
+                    id: project.id,
                     description: project.description,
                     created_at: project.created_at,
                   };
@@ -570,31 +566,20 @@ class YCmap extends React.Component {
 
       for(let task of infoList){
         console.log(task);
-        
-
-        let lat = 0;
-        let lng = 0;
         // 将中心点作为标记点
-        for (const img of task){
-           lat = lat + img.latitude;
-           lng = lng + img.longitude;
-        }
-
-        const markerPoint = [lat/task.length, lng/task.length];
-
-        console.log(markerPoint);
-
         const marker = L.marker(
-          markerPoint,
-          // [task.latitude,task.longitude],
+          [(task.bounds.value[1]+task.bounds.value[3])/2,
+            (task.bounds.value[0]+task.bounds.value[2])/2],
           { icon: taskIcon }
         );
         var popup = L.DomUtil.create('div', 'infoWindow');
 
             popup.innerHTML = `<b>${task.project.name}</b>
+                               <br/>${task.name}
                                <br/>创建时间：
                                <br/>${task.project.created_at}
-                               <br/>${task.project.description}`;
+                               <br/>${task.project.description}
+                               <a href="/map/project/${task.project.id}/">查看详情</a>`;
 
         marker.bindPopup(popup).openPopup();
         // marker.bindPopup(``).openPopup();
@@ -605,26 +590,9 @@ class YCmap extends React.Component {
 
       if(infoList.length >= 1){
         // 合并所有Bounds
-        console.log(infoList);
-        
-        var maxLat=-90;
-        var maxLng=-180;
-        var minLat=90;
-        var minLng=180;
-        for (let project of infoList){
-          for (let task of project) {
-            maxLat = task.latitude > maxLat? task.latitude: maxLat;
-            maxLng = task.longitude > maxLng? task.longitude: maxLng;
-            minLat = task.latitude < minLat? task.latitude: minLat;
-            minLng = task.longitude < minLng? task.longitude: minLng;
-          }
-        }
-
-        console.log(minLat, maxLat, minLng, maxLng);
-
         const markerBounds = infoList.map((info) => {
-          return [[minLat,minLng],
-                  [maxLat,maxLng]];
+          return [[Math.min(info.bounds.value[1]),Math.min(info.bounds.value[0])],
+                  [Math.max(info.bounds.value[3]),Math.max(info.bounds.value[2])]];
         });
         
         this.map.fitBounds(markerBounds);
