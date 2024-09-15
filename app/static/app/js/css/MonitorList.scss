@@ -1,0 +1,12 @@
+.monitor-list{
+    width: 50%;
+
+    ul.monitor-list.refreshing{
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    @media (orientation: portrait) {
+        width: 100%;
+    }
+}

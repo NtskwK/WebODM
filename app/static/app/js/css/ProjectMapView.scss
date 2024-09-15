@@ -1,0 +1,43 @@
+[data-mapview]{
+    height: calc(80vh);
+}
+
+.map-view{
+    height: calc(70%);
+    position: relative;
+
+    .map-title{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    input[type="range"]{
+        margin-left: 4px;
+        display: inline-block;
+        width: 130px;
+        position: relative;
+        top: 6px;
+    }
+
+    .map-container{
+        height: 90%;
+        position: relative;
+        .standby{
+            z-index: 9999;
+        }
+    }
+
+    .map-view-header{
+        display: flex;
+        justify-content: space-between;
+        .map-type-selector{
+            flex: none;
+        }
+    }
+}
+
+.add-button, .list-group{
+    margin-bottom: 8px;
+    margin-top: 8px;
+}
