@@ -217,12 +217,12 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        webodm_instance = models.Project.objects.get(id=serializer.data['id'])
+        webodm_id = serializer.data['id']
+        webodm_instance = models.Project.objects.get(id=webodm_id)
         try:
             yc_project = models.YcProject.objects.get(project_id=webodm_instance)
         except ObjectDoesNotExist:
-            models.YcProject.objects.create(project_id=webodm_instance)
+            models.YcProject.objects.create(id=webodm_id, project_id=webodm_instance)
 
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)  
-        

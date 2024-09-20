@@ -4,8 +4,11 @@ from rest_framework import viewsets, status, permissions, serializers
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 
 from django_filters import rest_framework as filters
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 
 from app.models.project import Project
 from app.models.yc_monitor_category import MonitorCategory
@@ -35,9 +38,16 @@ class YcProjectSerializer(serializers.ModelSerializer):
         model = YcProject
         fields = '__all__'
 
+
+class YcProjectFilter(filters.FilterSet):
+    class Meta:
+        model = YcProject
+        fields = ['id', 'name', 'project_id']
+
 class YcProjectViewSet(viewsets.ModelViewSet):
     queryset = YcProject.objects.all()
     serializer_class = YcProjectSerializer
+    filterset_class = YcProjectFilter
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
