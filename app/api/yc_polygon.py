@@ -9,6 +9,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
+from django_filters import rest_framework as filters
+
 from app.models.yc_project import YcProject
 from app.models.yc_polygon import YcPolygon
 
@@ -26,6 +28,11 @@ class isAdminUserorReadOnly(permissions.BasePermission):
             return True
         return request.user.is_staff and self.IS_SINGLE_CLIENT == False
 
+class YcPolygonFilter(filters.FilterSet):
+    class Meta:
+        model = YcPolygon
+        fields = ['id', 'name', 'project_id', 'description']
+
 class YcPolygonSerializer(serializers.ModelSerializer):
     class Meta:
         model = YcPolygon
@@ -34,6 +41,7 @@ class YcPolygonSerializer(serializers.ModelSerializer):
 class YcPolygonViewSet(viewsets.ModelViewSet):
     queryset = YcProject.objects.all()
     serializer_class = YcPolygonSerializer
+    filterset_class = YcPolygonFilter
 
     def get_permissions(self):
         if self.action in ['list', 'retrieve']:
