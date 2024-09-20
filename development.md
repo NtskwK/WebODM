@@ -1,7 +1,5 @@
 # 快速入门手册
 
-version 1.0
-
 # 0. 概述
 
 ## 关于WebODM
@@ -52,11 +50,11 @@ Github: [https://github.com/OpenDroneMap/WebODM](https://github.com/OpenDroneMap
 
 我们已经搭建好了一个可以使用的开发环境，现在你无需部署WebODM既可以参与到项目的开发中。
 
-~~*如果你需要在本地部署WebODM进行调试，请自行阅读官方指导*~~ 。
+~~如果你需要在本地部署WebODM进行调试，请自行阅读官方指导~~ 。
 
 ~~电脑运行内存没到32G的不要想这件事了~~
 
-可以在本地用`Docker`部署，但16g运行内存只能处理小于100张影像的工程。
+可以在本地用`Docker`部署，但16g运行内存只能处理小于50张影像的工程。
 
 # 2. 用户实践
 
@@ -67,6 +65,7 @@ Github: [https://github.com/OpenDroneMap/WebODM](https://github.com/OpenDroneMap
 # 4.二次开发
 实践前提：
 - 掌握基本的网络通信知识
-- - 了解Python Django框架
+- 了解Python Django框架
+- 了解Django REST framework的基本使用
 - 了解React框架
 
