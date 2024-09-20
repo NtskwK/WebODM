@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.contrib.postgres.aggregates import StringAgg
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 
 from app import models
 from .tasks import TaskIDsSerializer
@@ -211,4 +212,17 @@ class ProjectViewSet(viewsets.ModelViewSet):
                 perm = p + "_project"
                 remove_perm(perm, request.user, project)
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        webodm_instance = models.Project.objects.get(id=serializer.data['id'])
+        try:
+            yc_project = models.YcProject.objects.get(project_id=webodm_instance)
+        except ObjectDoesNotExist:
+            models.YcProject.objects.create(project_id=webodm_instance)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)  
         

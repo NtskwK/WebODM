@@ -10,15 +10,15 @@ from django.contrib.gis.db import models
 from .project import Project as webodm_project
 
 class YcProject(models.Model):
-    project_id = models.ForeignKey(webodm_project, blank=True, null=True, on_delete=models.DO_NOTHING, db_column='project_id', related_name='yc_projects')
-    identify = models.CharField(max_length=20)
-    name = models.CharField(max_length=256)
-    address = models.CharField(max_length=256)
-    info = models.CharField(max_length=1024)
+    project_id = models.ForeignKey(webodm_project, blank=True, null=True, on_delete=models.CASCADE, db_column='project_id', related_name='yc_projects')
+    identify = models.CharField(blank=True, null=True, max_length=20)
+    name = models.CharField(blank=True, null=True, max_length=256)
+    address = models.CharField(blank=True, null=True, max_length=256)
+    info = models.CharField(blank=True, null=True, max_length=1024)
     lat = models.FloatField(blank=True, null=True)
     lng = models.FloatField(blank=True, null=True)
-    monitor_base = models.CharField(max_length=1024)
-    monitor_rate_info = models.CharField(max_length=128)
+    monitor_base = models.CharField(blank=True, null=True, max_length=1024)
+    monitor_rate_info = models.CharField(blank=True, null=True, max_length=128)
     tags = models.TextField(blank=True, null=True)
     description = models.CharField(max_length=256, blank=True, null=True)
 

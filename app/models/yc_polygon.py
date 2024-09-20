@@ -10,7 +10,7 @@ from django.contrib.gis.db import models
 from .project import Project as webodm_project
 
 class YcPolygon(models.Model):
-    project_id = models.ForeignKey(webodm_project, blank=True, null=True, on_delete=models.DO_NOTHING, db_column='project_id', related_name='yc_projects')
+    project_id = models.ForeignKey(webodm_project, blank=True, null=True, on_delete=models.DO_NOTHING)
     name = models.CharField(max_length=255, blank=True, null=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     # WGS84 2D
