@@ -1,11 +1,9 @@
 import React from 'react';
 import './css/GlobalMapView.scss';
-import Map from './components/Map';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
 import { _, interpolate } from './classes/gettext';
-import YCmap from './components/YCmap';
-
+import GlobalMap from './components/GlobalMap';
 
 class GlobalMapView extends React.Component {
   static defaultProps = {
@@ -128,13 +126,14 @@ class GlobalMapView extends React.Component {
         : ""}
       
         <div className="map-container">
-            <YCmap 
+            <GlobalMap 
                 tiles={this.state.tiles} 
                 showBackground={true} 
                 mapType={this.state.selectedMapType} 
                 public={this.props.public}
                 shareButtons={this.props.shareButtons}
             />
+
         </div>
       </div>);
   }

@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom';
 import $ from 'jquery';
 import { _ } from './classes/gettext';
+import GlobalMapView from './GlobalMapView';
 
 class Dashboard extends React.Component {
   constructor(){
@@ -54,10 +55,14 @@ class Dashboard extends React.Component {
                 />;
     };
 
+    const globalmap = () => {
+      return <GlobalMap/>;
+    }
 
     return (
       <Router basename="/dashboard">
         <div>
+          <GlobalMapView/>
           <div className="text-right add-button">
             <button type="button" 
                     className="btn btn-primary btn-sm"

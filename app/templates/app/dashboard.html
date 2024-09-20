@@ -15,12 +15,11 @@
 	<h3>欢迎 ☺</h3>
 
 
-	{% render_bundle 'GlobalMapView' attrs='async' %}
-	<div data-mapview 
+	<!-- <div data-mapview 
 		{% for key, value in params %}
 			data-{{key}}="{{value}}"
 		{% endfor %}
-	></div>
+	></div> -->
 
 	{% if no_processingnodes %}
 		{% include "quota.html" %}

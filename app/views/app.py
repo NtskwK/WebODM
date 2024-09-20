@@ -81,7 +81,8 @@ def map(request, project_pk=None, task_pk=None):
                 'title': title,
                 'public': 'false',
                 'share-buttons': 'false' if settings.DESKTOP_MODE else 'true',
-                'permissions': json.dumps(get_permissions(request.user, project))
+                'permissions': json.dumps(get_permissions(request.user, project)),
+                'project-id': project.id
             }.items()
         })
 
@@ -158,22 +159,6 @@ def welcome(request):
                       'title': _('Welcome'),
                       'firstuserform': fuf
                   })
-
-
-
-@login_required
-def project_map(request):
-    title = _("Project Map")
-    return render(request, 'app/global_map.html', {
-            'title': title,
-            'params': {
-                # 'map-items': json.dumps(mapItems),
-                'title': title,
-                'public': 'false',
-                'share-buttons': 'false' if settings.DESKTOP_MODE else 'true'
-            }.items()
-        })
-
 
 def handler404(request, exception):
     return render(request, '404.html', status=404)

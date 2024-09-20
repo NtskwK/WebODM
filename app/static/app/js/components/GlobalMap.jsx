@@ -6,7 +6,6 @@ import Leaflet from 'leaflet';
 import async from 'async';
 import '../vendor/leaflet/Leaflet.Autolayers/css/leaflet.auto-layers.css';
 import '../vendor/leaflet/Leaflet.Autolayers/leaflet-autolayers';
-// import '../vendor/leaflet/L.TileLayer.NoGap';
 import Dropzone from '../vendor/dropzone';
 import $ from 'jquery';
 import ErrorMessage from './ErrorMessage';
@@ -23,12 +22,11 @@ import Standby from './Standby';
 import LayersControl from './LayersControl';
 import update from 'immutability-helper';
 import Utils from '../classes/Utils';
-import '../vendor/leaflet/Leaflet.Ajax';
 import 'rbush';
 import '../vendor/leaflet/leaflet-markers-canvas';
 import { _ } from '../classes/gettext';
 
-class YCmap extends React.Component {
+class GlobalMap extends React.Component {
   static defaultProps = {
     showBackground: false,
     mapType: "orthophoto",
@@ -38,7 +36,7 @@ class YCmap extends React.Component {
 
   static propTypes = {
     showBackground: PropTypes.bool,
-    tiles: PropTypes.array.isRequired,
+    tiles: PropTypes.array,
     mapType: PropTypes.oneOf(['orthophoto', 'plant', 'dsm', 'dtm']),
     public: PropTypes.bool,
     shareButtons: PropTypes.bool
@@ -725,8 +723,7 @@ class YCmap extends React.Component {
         <Standby 
             message={_("Loading...")}
             show={this.state.showLoading}
-            />
-            
+        />
         <div 
           style={{height: "100%"}}
           ref={(domNode) => (this.container = domNode)}
@@ -745,7 +742,7 @@ class YCmap extends React.Component {
           : ""}
           <SwitchModeButton 
             task={this.state.singleTask}
-            type="mapToModel" 
+            type="mapToModel"
             public={this.props.public} />
         </div>
       </div>
@@ -753,4 +750,4 @@ class YCmap extends React.Component {
   }
 }
 
-export default YCmap;
+export default GlobalMap;
