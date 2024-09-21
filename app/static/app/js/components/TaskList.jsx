@@ -14,7 +14,8 @@ class TaskList extends React.Component {
       onTaskMoved: PropTypes.func,
       hasPermission: PropTypes.func.isRequired,
       onTagsChanged: PropTypes.func,
-      onTagClicked: PropTypes.func
+      onTagClicked: PropTypes.func,
+      mapAlready: PropTypes.func,
   }
 
   constructor(props){
@@ -164,7 +165,9 @@ class TaskList extends React.Component {
             onEdited={this.taskEdited}
             onTagClicked={this.props.onTagClicked}
             hasPermission={this.props.hasPermission}
-            history={this.props.history} />
+            history={this.props.history}
+            mapAlready={this.props.mapAlready}
+          />
         ))}
 
         {message}

@@ -7,6 +7,7 @@ import ImportTaskPanel from './ImportTaskPanel';
 import UploadProgressBar from './UploadProgressBar';
 import ErrorMessage from './ErrorMessage';
 import EditProjectDialog from './EditProjectDialog';
+import EditYcProjectDialog from './EditYcProjectDialog';
 import SortPanel from './SortPanel';
 import Dropzone from '../vendor/dropzone';
 import csrf from '../django/csrf';
@@ -65,10 +66,13 @@ class ProjectListItem extends React.Component {
     this.viewMap = this.viewMap.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
     this.handleEditProject = this.handleEditProject.bind(this);
+    this.handleEditYcProject = this.handleEditYcProject.bind(this);
     this.updateProject = this.updateProject.bind(this);
+    this.updateYcProject = this.updateYcProject.bind(this);
     this.taskDeleted = this.taskDeleted.bind(this);
     this.taskMoved = this.taskMoved.bind(this);
     this.hasPermission = this.hasPermission.bind(this);
+    this.mapAvailable = false;
   }
 
   refresh(){
@@ -91,6 +95,7 @@ class ProjectListItem extends React.Component {
   componentWillUnmount(){
     if (this.deleteProjectRequest) this.deleteProjectRequest.abort();
     if (this.refreshRequest) this.refreshRequest.abort();
+    if (this.refreshYcRequest) this.refreshYcRequest.abort();
   }
 
   componentDidUpdate(prevProps, prevState){
@@ -433,6 +438,10 @@ class ProjectListItem extends React.Component {
     this.editProjectDialog.show();
   }
 
+  handleEditYcProject(){
+    this.editYcProjectDialog.show();
+  }
+
   handleHideProject = (deleteWarning, deleteAction) => {
     return () => {
       if (window.confirm(deleteWarning)){
@@ -459,6 +468,29 @@ class ProjectListItem extends React.Component {
         }),
         dataType: 'json',
         type: 'POST'
+      }).done(() => {
+        this.refresh();
+      });
+  }
+
+  updateYcProject(ycProject){
+    return $.ajax({
+        url: `/api/yc/${this.state.data.id}`,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          name: ycProject.name,
+          identifys: ycProject.identify,
+          address: ycProject.address,
+          info: ycProject.info,
+          lat: ycProject.lat,
+          lng: ycProject.lng,
+          monitor_base: ycProject.monitor_base,
+          monitor_rate_info: ycProject.monitor_rate_info,
+          tags: ycProject.tags,
+          description: ycProject.description,
+        }),
+        dataType: 'json',
+        type: 'PUT'
       }).done(() => {
         this.refresh();
       });
@@ -589,6 +621,10 @@ class ProjectListItem extends React.Component {
     }
   }
 
+  mapAlready = () => {
+    this.mapAvailable = true;
+  }
+
   render() {
     const { refreshing, data, filterTags } = this.state;
     const numTasks = data.tasks.length;
@@ -610,7 +646,8 @@ class ProjectListItem extends React.Component {
             saveLabel={_("Save Changes")}
             savingLabel={_("Saving changes...")}
             saveIcon="far fa-edit"
-            showDuplicate={true}
+            // showDuplicate={true}
+            showDuplicate={false}
             onDuplicated={this.props.onProjectDuplicated}
             projectName={data.name}
             projectDescr={data.description}
@@ -621,6 +658,14 @@ class ProjectListItem extends React.Component {
             showPermissions={this.hasPermission("change")}
             deleteAction={this.hasPermission("delete") ? this.handleDelete : undefined}
             />
+        : ""}
+        
+        {canEdit ? 
+            // <EditYcProjectDialog 
+            // ref={(domNode) => { this.editYcProjectDialog = domNode; }}
+            // ycProjectId={data.id}
+            // />
+            <EditYcProjectDialog/>
         : ""}
 
         <div className="row no-margin">
@@ -663,14 +708,14 @@ class ProjectListItem extends React.Component {
             {data.description}
           </div>
           <div className="row project-links">
-            {numTasks > 0 ? 
-              <span>
-                <i className='fa fa-tasks'></i>
-                <a href="javascript:void(0);" onClick={this.toggleTaskList}>
-                  {interpolate(_("%(count)s Tasks"), { count: numTasks})} <i className={'fa fa-caret-' + (this.state.showTaskList ? 'down' : 'right')}></i>
-                </a>
-              </span>
-              : ""}
+
+            <span>
+              <i className='fa fa-tasks'></i>
+              <a href="javascript:void(0);" onClick={this.toggleTaskList}>
+                {interpolate(_("%(count)s Tasks"), { count: numTasks})} <i className={'fa fa-caret-' + (this.state.showTaskList ? 'down' : 'right')}></i>
+              </a>
+            </span>
+
             
             {this.state.showTaskList && numTasks > 1 ? 
               <div className="task-filters">
@@ -711,19 +756,25 @@ class ProjectListItem extends React.Component {
                   <SortPanel selected="-created_at" items={this.sortItems} onChange={this.sortChanged} />
                 </div>
               </div> : ""}
+              
+            {canEdit ? 
+                [<i key="edit-icon" className='fas fa-tools'></i>
+                ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleEditProject}> {"项目设置"}
+                </a>]
+            : ""}
+            
+            {canEdit ? 
+                [<i key="edit-icon" className='far fa-edit'></i>
+                ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleEditYcProject}> {"项目信息"}
+                </a>]
+            : ""}
 
-              {numTasks > 0 ? 
+            {numTasks > 0 && this.mapAvailable ? 
                 [<i key="edit-icon" className='fa fa-globe'></i>
                 ,<a key="edit-text" href="javascript:void(0);" onClick={this.viewMap}>
                   {"查看项目地图"}
                 </a>]
               : ""}
-              
-            {canEdit ? 
-                [<i key="edit-icon" className='far fa-edit'></i>
-                ,<a key="edit-text" href="javascript:void(0);" onClick={this.handleEditProject}> {"编辑"}
-                </a>]
-            : ""}
 
             {!canEdit && !data.owned ? 
               [<i key="edit-icon" className='far fa-eye-slash'></i>
@@ -773,6 +824,7 @@ class ProjectListItem extends React.Component {
                 onTagsChanged={this.tagsChanged}
                 onTagClicked={this.selectTag}
                 history={this.props.history}
+                mapAlready={this.mapAlready}
             /> : ""}
 
         </div>

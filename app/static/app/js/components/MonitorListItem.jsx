@@ -1,4 +1,4 @@
-import '../css/ProjectListItem.scss';
+import '../css/MonitorListItem.scss';
 import React from 'react';
 import update from 'immutability-helper';
 import SensorDataList from './MonitorDataList';
@@ -18,7 +18,7 @@ import exifr from '../vendor/exifr';
 import { _, interpolate } from '../classes/gettext';
 import $ from 'jquery';
 
-class SensorListItem extends React.Component {
+class MonitorListItem extends React.Component {
   static propTypes = {
       history: PropTypes.object.isRequired,
       data: PropTypes.object.isRequired, // project json
@@ -638,12 +638,13 @@ class SensorListItem extends React.Component {
                       onClick={this.handleUpload}
                       ref={this.setRef("uploadButton")}>
                   <i className="glyphicon glyphicon-upload"></i>
-                  选择数据源
+                  {"选择原始数据"}
                 </button>
                 <button type="button" 
                       className="btn btn-default btn-sm"
                       onClick={this.handleImportTask}>
-                  <i className="glyphicon glyphicon-import"></i> {"导入现有数据"}
+                  <i className="glyphicon glyphicon-import"></i> 
+                  {"导入数据资产"}
                 </button>
                 {this.state.buttons.map((button, i) => <React.Fragment key={i}>{button}</React.Fragment>)}
               </div>
@@ -787,4 +788,4 @@ class SensorListItem extends React.Component {
   }
 }
 
-export default SensorListItem;
+export default MonitorListItem;

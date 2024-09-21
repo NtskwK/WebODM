@@ -27,7 +27,8 @@ class TaskListItem extends React.Component {
       onDuplicate: PropTypes.func,
       hasPermission: PropTypes.func,
       onEdited: PropTypes.func,
-      onTagClicked: PropTypes.func
+      onTagClicked: PropTypes.func,
+      mapAlready: PropTypes.func,
   }
 
   constructor(props){
@@ -463,6 +464,7 @@ class TaskListItem extends React.Component {
 
       if (task.status === statusCodes.COMPLETED){
         if (task.available_assets.indexOf("orthophoto.tif") !== -1 || task.available_assets.indexOf("dsm.tif") !== -1){
+          this.props.mapAlready()
           addActionButton(" " + _("View Map"), "btn-primary", "fa fa-globe", () => {
             location.href = `/map/project/${task.project}/task/${task.id}/`;
           });

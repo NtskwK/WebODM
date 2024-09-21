@@ -9,14 +9,15 @@ import { _ } from '../classes/gettext';
 
 class EditProjectDialog extends React.Component {
     static defaultProps = {
+        title: _("Project Settings"),
+        title: "Project Settings",
+        saveLabel: _("Save Changes"),
+        savingLabel: _("Saving changes..."),
+        saveIcon: "far fa-tools",
         projectName: "",
         projectDescr: "",
         projectId: -1,
         projectTags: [],
-        title: "添加传感器",
-        saveLabel: "添加",
-        savingLabel: "正在添加",
-        saveIcon: "glyphicon glyphicon-plus",
         deleteWarning: "",
         show: false,
         showDuplicate: false,
@@ -32,10 +33,6 @@ class EditProjectDialog extends React.Component {
         saveAction: PropTypes.func.isRequired,
         onShow: PropTypes.func,
         deleteAction: PropTypes.func,
-        title: PropTypes.string,
-        saveLabel: PropTypes.string,
-        savingLabel: PropTypes.string,
-        saveIcon: PropTypes.string,
         deleteWarning: PropTypes.string,
         show: PropTypes.bool,
         showDuplicate: PropTypes.bool,
@@ -73,6 +70,17 @@ class EditProjectDialog extends React.Component {
     }
 
     getFormData(){
+      $.getJSON(`/api/yc/${this.state.data.id}/`)
+      .done((json) => {
+        this.setState({ycData: json});
+      })
+      .fail((_, __, e) => {
+        this.setState({error: e.message});
+      })
+      .always(() => {
+        this.setState({refreshing: false});
+      });
+
       const res = {
           name: this.state.name,
           descr: this.state.descr,
@@ -162,12 +170,12 @@ class EditProjectDialog extends React.Component {
                 getFormData={this.getFormData}
                 reset={this.reset}
                 onShow={this.onShow}
-                leftButtons={this.props.showDuplicate ? [<button key="duplicate" disabled={this.duplicating} onClick={this.handleDuplicate} className="btn btn-default"><i className={"fa " + (this.state.duplicating ? "fa-circle-notch fa-spin fa-fw" : "fa-copy")}></i> Duplicate</button>] : undefined}
+                leftButtons={this.props.showDuplicate ? [<button key="duplicate" disabled={this.duplicating} onClick={this.handleDuplicate} className="btn btn-default"><i className={"fa " + (this.state.duplicating ? "fa-circle-notch fa-spin fa-fw" : "fa-copy")}></i><span className="hidden-xs"> {_("Duplicate")}</span></button>] : undefined}
                 ref={(domNode) => { this.dialog = domNode; }}>
               <ErrorMessage bind={[this, "error"]} />
               <div className="form-group edit-project-dialog">
-                <label className="col-sm-2 control-label">{_("Name")}</label>
-                <div className="col-sm-10 name-fields">
+                <label className="col-sm-3 control-label">{_("Name")}</label>
+                <div className="col-sm-9 name-fields">
                   <input type="text" className="form-control" ref={(domNode) => { this.nameInput = domNode; }} value={this.state.name} onChange={this.handleChange('name')} onKeyPress={e => this.dialog.handleEnter(e)} />
                   <button type="button" title={_("Add tags")} onClick={this.toggleTagsField} className="btn btn-sm btn-secondary toggle-tags">
                     <i className="fa fa-tag"></i>
@@ -176,17 +184,11 @@ class EditProjectDialog extends React.Component {
               </div>
               {tagsField}
               <div className="form-group">
-                <label className="col-sm-2 control-label">{_("Description (optional)")}</label>
-                <div className="col-sm-10">
+                <label className="col-sm-3 control-label">{_("Description (optional)")}</label>
+                <div className="col-sm-9">
                   <textarea className="form-control" rows="3" value={this.state.descr} onChange={this.handleChange('descr')} />
                 </div>
               </div>
-              {this.props.showPermissions ? 
-                <EditPermissionsPanel 
-                    projectId={this.props.projectId}
-                    lazyLoad={true}
-                    ref={(domNode) => { this.editPermissionsPanel = domNode; }} />
-              : ""}
             </FormDialog>
         );
     }

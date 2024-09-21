@@ -1,7 +1,7 @@
 import React from 'react';
-import './css/MapView.scss';
+import './css/ProjectMapView.scss';
 import Map from './components/Map';
-import SensorList from './components/SensorList';
+import MonitorList from './components/MonitorList';
 import EditProjectDialog from './components/EditProjectDialog';
 import {
   BrowserRouter as Router,
@@ -28,12 +28,14 @@ class MapView extends React.Component {
       title: PropTypes.string,
       public: PropTypes.bool,
       shareButtons: PropTypes.bool,
-      permissions: PropTypes.array
+      permissions: PropTypes.array,
+      projectId: PropTypes.number
   };
 
   constructor(props){
     super(props);
     
+
     this.handleAddProject = this.handleAddProject.bind(this);
     this.addNewProject = this.addNewProject.bind(this);
 
@@ -127,7 +129,7 @@ class MapView extends React.Component {
         tags: project.tags
       })
     }).done(() => {
-      this.sensorList.refresh();
+      this.monitorList.refresh();
     });
   }
 
@@ -157,17 +159,18 @@ class MapView extends React.Component {
       }
     ].filter(mapType => this.getTilesByMapType(mapType.type).length > 0 );
 
-    const sensorList = ({ location, history }) => {
+    const monitorList = ({ location, history }) => {
       let q = Utils.queryParams(location);
       if (q.page === undefined) q.page = 1;
       else q.page = parseInt(q.page);
 
-      return <SensorList
+      return <MonitorList
                 source={`/api/projects/${Utils.toSearchQuery(q)}`}
-                ref={(domNode) => { this.sensorList = domNode; }} 
+                ref={(domNode) => { this.monitorList = domNode; }} 
                 currentPage={q.page}
                 currentSearch={q.search}
                 history={history}
+                projectId={this.props.projectId}
                 />;
     };
 
@@ -205,7 +208,7 @@ class MapView extends React.Component {
         <div className='sensor-container'>
           <Router basename="/dashboard">
             <div>
-              <div className="text-right add-button">
+              <div className="text-left add-button">
                 <button type="button" 
                         className="btn btn-primary btn-sm"
                         onClick={this.handleAddProject}>
@@ -218,7 +221,7 @@ class MapView extends React.Component {
                 saveAction={this.addNewProject}
                 ref={(domNode) => { this.projectDialog = domNode; }}
                 />
-              <Route path="/" component={sensorList} />
+              <Route path="/" component={monitorList} />
             </div>
           </Router>
         </div>

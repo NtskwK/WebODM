@@ -1,8 +1,8 @@
 import React from 'react';
 import $ from 'jquery';
-import '../css/ProjectList.scss';
+import '../css/MonitorList.scss';
 
-import SensorListItem from './SensorListItem';
+import MonitorListItem from './MonitorListItem';
 import Paginated from './Paginated';
 import Paginator from './Paginator';
 import ErrorMessage from './ErrorMessage';
@@ -10,7 +10,7 @@ import { _, interpolate } from '../classes/gettext';
 import PropTypes from 'prop-types';
 import Utils from '../classes/Utils';
 
-class SensorList extends Paginated {
+class MonitorList extends Paginated {
     static propTypes = {
         history: PropTypes.object.isRequired,
     }
@@ -18,15 +18,18 @@ class SensorList extends Paginated {
     constructor(props){
         super(props);
 
+        console.log(props);
+        
         this.state = {
             loading: true,
             refreshing: false,
             error: "",
             projects: [],
-            monitor: [],
+            monitors: [],
         }
 
         this.PROJECTS_PER_PAGE = 10;
+        this.MONITORS_PER_PAGE = 10;
 
         this.handleDelete = this.handleDelete.bind(this);
     }
@@ -86,13 +89,14 @@ class SensorList extends Paginated {
             });
         
         this.serverRequest2 = 
-            $.getJSON("/api/yc/monitor/points/", json => {
+            $.getJSON("/api/monitors/?project_id=" + this.props.projectId, json => {
                 if (json.results){
                     this.setState({
-                        projects: json.results,
+                        monitors: json.results,
                         loading: false
                     });
-                    this.updatePagination(this.PROJECTS_PER_PAGE, json.count);
+                    console.log(json.results);
+                    this.updatePagination(this.MONITORS_PER_PAGE, json.count);
                 }else{
                     this.setState({ 
                         error: interpolate(_("Invalid JSON response: %(error)s"), {error: JSON.stringify(json)}),
@@ -102,13 +106,13 @@ class SensorList extends Paginated {
             })
             .fail((jqXHR, textStatus, errorThrown) => {
                 this.setState({ 
-                    error: interpolate(_("Could not load projects list: %(error)s"), {error: textStatus}),
+                    error: interpolate(_("Could not load monitors list: %(error)s"), {error: textStatus}),
                     loading: false
                 });
             })
             .always(() => {
                 this.setState({refreshing: false});
-            });
+            });        
     }
 
     onPageChanged(pageNum){
@@ -125,6 +129,12 @@ class SensorList extends Paginated {
         this.handlePageItemsNumChange(-1, () => {
             this.refresh();
         });
+
+        let monitors = this.state.monitors.filter(p => p.id !== projectId);
+        this.setState({monitors: monitors});
+        this.handlePageItemsNumChange(-1, () => {
+            this.refresh();
+        })
     }
 
     handleTaskMoved = (task) => {
@@ -139,14 +149,14 @@ class SensorList extends Paginated {
 
     render() {
         if (this.state.loading){
-            return (<div className="project-list text-center"><i className="fa fa-sync fa-spin fa-2x fa-fw"></i></div>);
+            return (<div className="monitor-list text-center"><i className="fa fa-sync fa-spin fa-2x fa-fw"></i></div>);
         }else{
-            return (<div className="project-list">
+            return (<div className="monitor-list">
                 <ErrorMessage bind={[this, 'error']} />
                 <Paginator {...this.state.pagination} {...this.props}>
-                    <ul key="1" className={"list-group project-list " + (this.state.refreshing ? "refreshing" : "")}>
+                    <ul key="1" className={"list-group" + (this.state.refreshing ? "refreshing" : "")}>
                         {this.state.projects.map(p => (
-                            <SensorListItem 
+                            <MonitorListItem 
                                 ref={(domNode) => { this["projectListItem_" + p.id] = domNode }}
                                 key={p.id} 
                                 data={p} 
@@ -162,4 +172,4 @@ class SensorList extends Paginated {
     }
 }
 
-export default SensorList;
+export default MonitorList;
