@@ -10,7 +10,6 @@ import {
 import $ from 'jquery';
 import { _ } from './classes/gettext';
 import GlobalMapView from './GlobalMapView';
-
 class Dashboard extends React.Component {
   constructor(){
     super();
@@ -55,9 +54,6 @@ class Dashboard extends React.Component {
                 />;
     };
 
-    const globalmap = () => {
-      return <GlobalMap/>;
-    }
 
     return (
       <Router basename="/dashboard">
