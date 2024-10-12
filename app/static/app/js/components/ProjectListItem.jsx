@@ -68,7 +68,6 @@ class ProjectListItem extends React.Component {
     this.handleEditProject = this.handleEditProject.bind(this);
     this.handleEditYcProject = this.handleEditYcProject.bind(this);
     this.updateProject = this.updateProject.bind(this);
-    this.updateYcProject = this.updateYcProject.bind(this);
     this.taskDeleted = this.taskDeleted.bind(this);
     this.taskMoved = this.taskMoved.bind(this);
     this.hasPermission = this.hasPermission.bind(this);
@@ -473,28 +472,7 @@ class ProjectListItem extends React.Component {
       });
   }
 
-  updateYcProject(ycProject){
-    return $.ajax({
-        url: `/api/yc/${this.state.data.id}`,
-        contentType: 'application/json',
-        data: JSON.stringify({
-          name: ycProject.name,
-          identifys: ycProject.identify,
-          address: ycProject.address,
-          info: ycProject.info,
-          lat: ycProject.lat,
-          lng: ycProject.lng,
-          monitor_base: ycProject.monitor_base,
-          monitor_rate_info: ycProject.monitor_rate_info,
-          tags: ycProject.tags,
-          description: ycProject.description,
-        }),
-        dataType: 'json',
-        type: 'PUT'
-      }).done(() => {
-        this.refresh();
-      });
-  }
+    
 
   viewMap(){
     location.href = `/map/project/${this.state.data.id}/`;
@@ -661,11 +639,22 @@ class ProjectListItem extends React.Component {
         : ""}
         
         {canEdit ? 
-            // <EditYcProjectDialog 
-            // ref={(domNode) => { this.editYcProjectDialog = domNode; }}
-            // ycProjectId={data.id}
-            // />
-            <EditYcProjectDialog/>
+          <EditYcProjectDialog
+          ref={(domNode) => { this.editYcProjectDialog = domNode; }}
+          saveIcon="far fa-edit"
+          showDuplicate={false}
+          // onDuplicated={this.props.onProjectDuplicated}
+          projectName={data.name}
+          projectDescr={data.description}
+          projectId={data.id}
+          projectTags={data.tags}
+          // deleteWarning={deleteWarning}
+          // showPermissions={this.hasPermission("change")}
+          // deleteAction={this.hasPermission("delete") ? this.handleDelete : undefined}
+          // <EditYcProjectDialog 
+          // ref={(domNode) => { this.editYcProjectDialog = domNode; }}
+          // ycProjectId={data.id}
+          />
         : ""}
 
         <div className="row no-margin">
