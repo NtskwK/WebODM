@@ -15,6 +15,7 @@ from app.models.yc_monitor_category import MonitorCategory
 from app.models.yc_monitor_data import MonitorData
 from app.models.yc_monitor_point import MonitorPoint
 from app.models.yc_project import YcProject
+from webodm import settings
 
 import logging
 
@@ -31,7 +32,13 @@ class isAdminUserorReadOnly(permissions.BasePermission):
 
         if request.method in permissions.SAFE_METHODS:
             return True
-        return request.user.is_staff and self.IS_SINGLE_CLIENT == True
+        
+        if request.user.is_staff:
+            return settings.DEV \
+                or settings.DEBUG \
+                or self.IS_SINGLE_CLIENT
+        
+        return False
 
 class YcProjectSerializer(serializers.ModelSerializer):
     class Meta:
