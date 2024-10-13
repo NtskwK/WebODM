@@ -2,7 +2,7 @@ import React from 'react';
 import './css/ProjectMapView.scss';
 import Map from './components/Map';
 import MonitorList from './components/MonitorList';
-import EditProjectDialog from './components/EditProjectDialog';
+import MonitorDialog from './components/MonitorDialog';
 import {
   BrowserRouter as Router,
   Route
@@ -10,7 +10,7 @@ import {
 import Utils from './classes/Utils';
 import $ from 'jquery';
 import PropTypes from 'prop-types';
-import { _, interpolate } from './classes/gettext';
+import { _ } from './classes/gettext';
 
 class MapView extends React.Component {
   static defaultProps = {
@@ -35,10 +35,6 @@ class MapView extends React.Component {
   constructor(props){
     super(props);
     
-
-    this.handleAddProject = this.handleAddProject.bind(this);
-    this.addNewProject = this.addNewProject.bind(this);
-
     let selectedMapType = props.selectedMapType;
 
     // Automatically select type based on available tiles
@@ -68,6 +64,12 @@ class MapView extends React.Component {
 
     this.getTilesByMapType = this.getTilesByMapType.bind(this);
     this.handleMapTypeButton = this.handleMapTypeButton.bind(this);
+    this.handleAddMonitor = this.handleAddMonitor.bind(this);
+    this.refresh = this.refresh.bind(this);
+  }
+
+  refresh(){
+    this.forceUpdate()
   }
 
   isThermalMap = () => {
@@ -112,26 +114,10 @@ class MapView extends React.Component {
     };
   }
 
-  handleAddProject(){
-    this.projectDialog.show();
+  handleAddMonitor(){
+    this.MonitorDialog.show();
   }
 
-  addNewProject(project){
-    if (!project.name) return (new $.Deferred()).reject(_("Name field is required"));
-
-    return $.ajax({
-      url: `/api/projects/`,
-      type: 'POST',
-      contentType: 'application/json',
-      data: JSON.stringify({
-        name: project.name,
-        description: project.descr,
-        tags: project.tags
-      })
-    }).done(() => {
-      this.monitorList.refresh();
-    });
-  }
 
   render(){
     const isThermal = this.isThermalMap();
@@ -211,15 +197,16 @@ class MapView extends React.Component {
               <div className="text-left add-button">
                 <button type="button" 
                         className="btn btn-primary btn-sm"
-                        onClick={this.handleAddProject}>
+                        onClick={this.handleAddMonitor}>
                   <i className="glyphicon glyphicon-plus"></i>
                   {"添加传感器"}
                 </button>
               </div>
 
-              <EditProjectDialog 
-                saveAction={this.addNewProject}
-                ref={(domNode) => { this.projectDialog = domNode; }}
+              <MonitorDialog
+                projectId={this.props.projectId}
+                refreshAction={this.refresh}
+                ref={(domNode) => { this.MonitorDialog = domNode; }}
                 />
               <Route path="/" component={monitorList} />
             </div>
