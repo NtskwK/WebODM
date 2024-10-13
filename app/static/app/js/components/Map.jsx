@@ -508,11 +508,11 @@ class Map extends React.Component {
     }
 
     // 切换图层
-    // this.layersControl = new LayersControl({
-    //     layers: this.state.imageryLayers,
-    //     overlays: this.state.overlays,
-    //     annotations: this.state.annotations
-    // }).addTo(this.map);
+    this.layersControl = new LayersControl({
+        layers: this.state.imageryLayers,
+        overlays: this.state.overlays,
+        annotations: this.state.annotations
+    }).addTo(this.map);
 
     this.autolayers = Leaflet.control.autolayers({
       overlays: {},
@@ -566,8 +566,8 @@ class Map extends React.Component {
         }
     });
 
-    // 地图切换
-    // new AddOverlayCtrl().addTo(this.map);
+    // 底图切换
+    new AddOverlayCtrl().addTo(this.map);
 
     this.map.fitBounds([
      [25.062919746115805,

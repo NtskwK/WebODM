@@ -7,7 +7,7 @@ import EditPermissionsPanel from "./EditPermissionsPanel";
 import TagsField from "./TagsField";
 import { _ } from "../classes/gettext";
 
-class EditYcProjectDialog extends React.Component {
+class YcProjectDialog extends React.Component {
   static defaultProps = {
     projectName: "",
     projectDescr: "",
@@ -313,4 +313,4 @@ class EditYcProjectDialog extends React.Component {
   }
 }
 
-export default EditYcProjectDialog;
+export default YcProjectDialog;

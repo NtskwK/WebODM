@@ -7,7 +7,7 @@ import ImportTaskPanel from './ImportTaskPanel';
 import UploadProgressBar from './UploadProgressBar';
 import ErrorMessage from './ErrorMessage';
 import EditProjectDialog from './EditProjectDialog';
-import EditYcProjectDialog from './EditYcProjectDialog';
+import YcProjectDialog from './YcProjectDialog';
 import SortPanel from './SortPanel';
 import Dropzone from '../vendor/dropzone';
 import csrf from '../django/csrf';
@@ -639,7 +639,7 @@ class ProjectListItem extends React.Component {
         : ""}
         
         {canEdit ? 
-          <EditYcProjectDialog
+          <YcProjectDialog
           ref={(domNode) => { this.editYcProjectDialog = domNode; }}
           saveIcon="far fa-edit"
           showDuplicate={false}
