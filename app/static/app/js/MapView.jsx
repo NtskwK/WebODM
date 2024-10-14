@@ -147,11 +147,12 @@ class MapView extends React.Component {
 
     const monitorList = ({ location, history }) => {
       let q = Utils.queryParams(location);
+      if (q.project_id === undefined) q.project_id = this.props.projectId;
       if (q.page === undefined) q.page = 1;
       else q.page = parseInt(q.page);
 
       return <MonitorList
-                source={`/api/projects/${Utils.toSearchQuery(q)}`}
+                source={`/api/monitors/${Utils.toSearchQuery(q)}`}
                 ref={(domNode) => { this.monitorList = domNode; }} 
                 currentPage={q.page}
                 currentSearch={q.search}

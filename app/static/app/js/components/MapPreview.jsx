@@ -32,7 +32,6 @@ class MapPreview extends React.Component {
   };
 
   constructor(props) {
-    console.log(props);
     super(props);
     
     this.state = {

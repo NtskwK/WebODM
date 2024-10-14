@@ -13,12 +13,12 @@ import Utils from '../classes/Utils';
 class MonitorList extends Paginated {
     static propTypes = {
         history: PropTypes.object.isRequired,
+        projectId: PropTypes.number,
     }
 
     constructor(props){
         super(props);
 
-        console.log(props);
         
         this.state = {
             loading: true,
@@ -26,12 +26,14 @@ class MonitorList extends Paginated {
             error: "",
             projects: [],
             monitors: [],
+            projectId: props.projectId,
         }
 
         this.PROJECTS_PER_PAGE = 10;
         this.MONITORS_PER_PAGE = 10;
 
-        this.handleDelete = this.handleDelete.bind(this);
+        // this.handleDelete = this.handleDelete.bind(this);
+        this.refresh = this.refresh.bind(this);
     }
 
     componentDidMount(){
@@ -62,40 +64,14 @@ class MonitorList extends Paginated {
     refresh(){
         this.setState({refreshing: true});
 
-        // Load projects from API
+        // Load monitors from API
         this.serverRequest = 
-            $.getJSON(this.props.source, json => {
-                if (json.results){
-                    this.setState({
-                        projects: json.results,
-                        loading: false
-                    });
-                    this.updatePagination(this.PROJECTS_PER_PAGE, json.count);
-                }else{
-                    this.setState({ 
-                        error: interpolate(_("Invalid JSON response: %(error)s"), {error: JSON.stringify(json)}),
-                        loading: false
-                    });
-                }
-            })
-            .fail((jqXHR, textStatus, errorThrown) => {
-                this.setState({ 
-                    error: interpolate(_("Could not load projects list: %(error)s"), {error: textStatus}),
-                    loading: false
-                });
-            })
-            .always(() => {
-                this.setState({refreshing: false});
-            });
-        
-        this.serverRequest2 = 
             $.getJSON("/api/monitors/?project_id=" + this.props.projectId, json => {
                 if (json.results){
                     this.setState({
                         monitors: json.results,
                         loading: false
                     });
-                    console.log(json.results);
                     this.updatePagination(this.MONITORS_PER_PAGE, json.count);
                 }else{
                     this.setState({ 
@@ -123,19 +99,19 @@ class MonitorList extends Paginated {
         this.serverRequest.abort();
     }
 
-    handleDelete(projectId){
-        let projects = this.state.projects.filter(p => p.id !== projectId);
-        this.setState({projects: projects});
-        this.handlePageItemsNumChange(-1, () => {
-            this.refresh();
-        });
+    // handleDelete(projectId){
+    //     let projects = this.state.projects.filter(p => p.id !== projectId);
+    //     this.setState({projects: projects});
+    //     this.handlePageItemsNumChange(-1, () => {
+    //         this.refresh();
+    //     });
 
-        let monitors = this.state.monitors.filter(p => p.id !== projectId);
-        this.setState({monitors: monitors});
-        this.handlePageItemsNumChange(-1, () => {
-            this.refresh();
-        })
-    }
+    //     let monitors = this.state.monitors.filter(p => p.id !== projectId);
+    //     this.setState({monitors: monitors});
+    //     this.handlePageItemsNumChange(-1, () => {
+    //         this.refresh();
+    //     })
+    // }
 
     handleTaskMoved = (task) => {
         if (this["projectListItem_" + task.project]){
@@ -155,12 +131,12 @@ class MonitorList extends Paginated {
                 <ErrorMessage bind={[this, 'error']} />
                 <Paginator {...this.state.pagination} {...this.props}>
                     <ul key="1" className={"list-group" + (this.state.refreshing ? "refreshing" : "")}>
-                        {this.state.projects.map(p => (
+                        {this.state.monitors.map(p => (
                             <MonitorListItem 
-                                ref={(domNode) => { this["projectListItem_" + p.id] = domNode }}
+                                ref={(domNode) => { this["MonitorListItem_" + p.id] = domNode }}
                                 key={p.id} 
                                 data={p} 
-                                onDelete={this.handleDelete}
+                                // onDelete={this.handleDelete}
                                 onTaskMoved={this.handleTaskMoved}
                                 onProjectDuplicated={this.handleProjectDuplicated}
                                 history={this.props.history} /> 

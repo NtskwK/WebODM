@@ -21,7 +21,6 @@ funcsigs==1.0.2
 futures==3.1.1
 gunicorn==23.0.0
 itypes==1.1.0
-kombu==4.6.7
 Markdown==3.3.4
 olefile==0.44
 openapi-codec==1.1.7
