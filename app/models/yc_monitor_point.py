@@ -50,6 +50,7 @@ class MonitorPoint(models.Model):
     res3_last = models.FloatField(blank=True, null=True)
     res4_init = models.FloatField(blank=True, null=True)
     res4_last = models.FloatField(blank=True, null=True)
+    is_delete = models.BooleanField(blank=True, null=True)
 
     class Meta:
         # managed = False

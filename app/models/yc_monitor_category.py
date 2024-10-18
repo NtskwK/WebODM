@@ -61,6 +61,7 @@ class MonitorCategory(models.Model):
     project_id = models.IntegerField(blank=True, null=True)
     remark = models.CharField(max_length=512, blank=True, null=True)
     enable = models.DateField(blank=True, null=True)
+    is_delete = models.BooleanField(blank=True, null=True)
 
     class Meta:
         # managed = False
