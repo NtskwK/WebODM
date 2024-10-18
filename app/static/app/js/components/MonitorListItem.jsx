@@ -25,6 +25,7 @@ class MonitorListItem extends React.Component {
     onDelete: PropTypes.func,
     onTaskMoved: PropTypes.func,
     onProjectDuplicated: PropTypes.func,
+    refresh: PropTypes.func,
   };
 
   constructor(props) {
@@ -74,23 +75,6 @@ class MonitorListItem extends React.Component {
     this.taskDeleted = this.taskDeleted.bind(this);
     this.taskMoved = this.taskMoved.bind(this);
     // this.hasPermission = this.hasPermission.bind(this);
-    this.refresh = this.refresh.bind(this);
-  }
-
-  refresh() {
-    // Update project information based on server
-    this.setState({ refreshing: true });
-
-    this.refreshRequest = $.getJSON(`/api/monitors/${this.state.data.id}/`)
-      .done((json) => {
-        this.setState({ data: json });
-      })
-      .fail((_, __, e) => {
-        this.setState({ error: e.message });
-      })
-      .always(() => {
-        this.setState({ refreshing: false });
-      });
   }
 
   componentWillUnmount() {
@@ -653,7 +637,7 @@ class MonitorListItem extends React.Component {
             saveAction={this.updateProject}
             // showPermissions={this.hasPermission("change")}
             showPermissions={false}
-            refreshAction={this.refresh}
+            refreshAction={this.props.refresh}
           />
         ) : (
           ""

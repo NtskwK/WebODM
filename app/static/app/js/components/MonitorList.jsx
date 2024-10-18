@@ -136,6 +136,7 @@ class MonitorList extends Paginated {
                                 ref={(domNode) => { this["MonitorListItem_" + p.id] = domNode }}
                                 key={p.id} 
                                 data={p} 
+                                refresh={this.refresh}
                                 // onDelete={this.handleDelete}
                                 onTaskMoved={this.handleTaskMoved}
                                 onProjectDuplicated={this.handleProjectDuplicated}

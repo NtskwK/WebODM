@@ -37,7 +37,6 @@ class YcProjectDialog extends React.Component {
     projectId: PropTypes.number,
     projectTags: PropTypes.array,
     onShow: PropTypes.func,
-    deleteAction: PropTypes.func,
     title: PropTypes.string,
     saveLabel: PropTypes.string,
     savingLabel: PropTypes.string,

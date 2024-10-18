@@ -79,6 +79,7 @@ class MonitorDialog extends React.Component {
     data: PropTypes.object,
 
     refreshAction: PropTypes.func,
+    projectId: PropTypes.number,
   };
 
   constructor(props) {
@@ -130,7 +131,7 @@ class MonitorDialog extends React.Component {
   }
 
   saveAction(monitor) {
-    if (!this.state) {
+    if (this.props.data.id == -1) {
       return this.addNewMonitor(monitor);
     } else {
       return this.updateMonitor(monitor);
@@ -182,6 +183,10 @@ class MonitorDialog extends React.Component {
       res4_init: this.props.data.res4_init,
       res4_last: this.props.data.res4_last,
     });
+
+    if (this.props.projectId){
+      this.setState({projectId: this.props.projectId});
+    }
   }
 
   getFormData() {
@@ -264,10 +269,10 @@ class MonitorDialog extends React.Component {
 
   deleteAction() {
     return $.ajax({
-      url: `/api/monitors/${this.props.data.id}`,
+      url: `/api/monitors/${this.props.data.id}/`,
       type: "DELETE",
     }).done(() => {
-      if (this.props.onDelete) this.props.onDelete(this.state.data.id);
+      this.props.refreshAction();
     });
   }
 
