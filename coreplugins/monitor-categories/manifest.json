@@ -1,0 +1,13 @@
+{
+	"name": "monitor-categories",
+	"webodmMinVersion": "0.6.2",
+	"description": "Display monitor-categories",
+	"version": "1.0.0",
+	"author": "Ntskwk",
+	"email": "natsukawa247@outlook.com",
+	"repository": "https://github.com/ntkskwk/WebODM",
+	"tags": ["yc"],
+	"homepage": "https://github.com/ntkskwk/WebODM",
+	"experimental": false,
+	"deprecated": false
+}
