@@ -12,7 +12,7 @@ from rest_framework_jwt.views import obtain_jwt_token
 from .tiler import TileJson, Bounds, Metadata, Tiles, Export
 from .potree import Scene, CameraView
 from .workers import CheckTask, GetTaskResult
-from .users import UsersList
+from .users import UsersList, UsersDetail
 from .externalauth import ExternalTokenAuth
 from .yc_monitor import YcMonitorCategoryViewSet, YcMonitorDataViewSet, YcMonitorPointViewSet, YcProjectViewSet
 from .yc_polygon import YcPolygonViewSet
@@ -74,6 +74,7 @@ urlpatterns = [
 ]
 
 if settings.ENABLE_USERS_API:
+    urlpatterns.append(url(r'users/info/', UsersDetail.as_view()))
     urlpatterns.append(url(r'users', UsersList.as_view()))
 
 if settings.EXTERNAL_AUTH_ENDPOINT != '':

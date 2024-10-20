@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
-from rest_framework import exceptions, permissions, parsers
+from rest_framework import exceptions, permissions, parsers, status
 from rest_framework.response import Response
 
 class UsersList(APIView):
@@ -22,3 +22,22 @@ class UsersList(APIView):
                 raise exceptions.ValidationError(detail="Invalid query parameters")
 
         return Response([{'username': u.username, 'email': u.email} for u in qs])
+
+
+class UsersDetail(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+    parser_classes = (parsers.JSONParser, parsers.FormParser,)
+
+    def get(self, request):
+        instance = self.request.user
+        roles = ["common"]
+        roles.append("admin" if instance.is_staff else "")
+        data = {
+            "success": True,
+            "data": {
+                'username': instance.username,
+                'roles': roles,
+            }
+        }
+        
+        return Response(data, status=status.HTTP_200_OK)
