@@ -6,12 +6,17 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
-from app import models
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model  = User
         fields = '__all__' 
+
+    def __init__(self, *args, **kwargs):
+        super(UserSerializer, self).__init__(*args, **kwargs)
+        if self.context['request'].method == 'GET':
+            self.fields.pop('password')
+
 
 class AdminUserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
