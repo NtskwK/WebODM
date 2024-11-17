@@ -2,4 +2,4 @@
 
 docker-compose down
 ./webodm.sh down
-./webodm.sh start --dev --gpu --media-dir ../media-webodm  --dev-watch-plugins
+./webodm.sh start --dev --gpu --media-dir ../media-webodm
