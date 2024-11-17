@@ -6,7 +6,7 @@ import $ from 'jquery';
 import HistoryNav from '../classes/HistoryNav';
 import { _, interpolate } from '../classes/gettext';
 
-class SensorDataList extends React.Component {
+class MonitorDataList extends React.Component {
   static propTypes = {
       history: PropTypes.object.isRequired,
       source: PropTypes.string.isRequired, // URL where to load task list
@@ -148,30 +148,30 @@ class SensorDataList extends React.Component {
     }
 
     return (
-      <div className="task-list">
-        nihao
-        {this.state.tasks.filter(t => {
-          const name = t.name !== null ? t.name : interpolate(_("Task #%(number)s"), { number: t.id });
-          return name.toLocaleLowerCase().indexOf(this.state.filterText.toLocaleLowerCase()) !== -1 &&
-                  this.arrayContainsAll(t.tags, this.state.filterTags);
-        }).map(task => (
-          <SensorDataListItem
-            data={task} 
-            key={task.id} 
-            refreshInterval={3000} 
-            onDelete={this.deleteTask}
-            onMove={this.moveTask}
-            onDuplicate={this.refresh}
-            onEdited={this.taskEdited}
-            onTagClicked={this.props.onTagClicked}
-            hasPermission={this.props.hasPermission}
-            history={this.props.history} />
-        ))}
+      ""
+      // <div className="task-list">
+      //   {this.state.tasks.filter(t => {
+      //     const name = t.name !== null ? t.name : interpolate(_("Task #%(number)s"), { number: t.id });
+      //     return name.toLocaleLowerCase().indexOf(this.state.filterText.toLocaleLowerCase()) !== -1 &&
+      //             this.arrayContainsAll(t.tags, this.state.filterTags);
+      //   }).map(task => (
+      //     <SensorDataListItem
+      //       data={task} 
+      //       key={task.id} 
+      //       refreshInterval={3000} 
+      //       onDelete={this.deleteTask}
+      //       onMove={this.moveTask}
+      //       onDuplicate={this.refresh}
+      //       onEdited={this.taskEdited}
+      //       onTagClicked={this.props.onTagClicked}
+      //       hasPermission={this.props.hasPermission}
+      //       history={this.props.history} />
+      //   ))}
 
-        {message}
-      </div>
+      //   {message}
+      // </div>
     );
   }
 }
 
-export default SensorDataList;
+export default MonitorDataList;
