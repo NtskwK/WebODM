@@ -14,9 +14,6 @@ class UserSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(UserSerializer, self).__init__(*args, **kwargs)
-        if self.context['request'].method == 'GET':
-            self.fields.pop('password')
-
 
 class AdminUserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
