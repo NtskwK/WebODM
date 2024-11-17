@@ -14,6 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, **kwargs):
         super(UserSerializer, self).__init__(*args, **kwargs)
+        if self.context['request'].method == 'GET':
+            self.fields.pop('password')
 
 class AdminUserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -30,7 +32,7 @@ class AdminUserViewSet(viewsets.ModelViewSet):
         data = request.data.copy()
         password = data.get('password')
         data['password'] = make_password(password)
-        user = UserSerializer(data=data)
+        user = UserSerializer(data=data, context={'request': request})
         user.is_valid(raise_exception=True)
         user.save()
         return Response(user.data, status=status.HTTP_201_CREATED)
