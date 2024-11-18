@@ -74,8 +74,8 @@ urlpatterns = [
 ]
 
 if settings.ENABLE_USERS_API:
-    urlpatterns.append(url(r'users/info', UsersDetail.as_view()))
-    urlpatterns.append(url(r'users', UsersList.as_view()))
+    urlpatterns.append(url(r'^users/info', UsersDetail.as_view()))
+    urlpatterns.append(url(r'^users', UsersList.as_view()))
 
 if settings.EXTERNAL_AUTH_ENDPOINT != '':
     urlpatterns.append(url(r'^external-token-auth/', ExternalTokenAuth.as_view()))

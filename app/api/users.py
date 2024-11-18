@@ -2,6 +2,7 @@ from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework import exceptions, permissions, parsers, status
 from rest_framework.response import Response
+from django.middleware.csrf import get_token
 
 class UsersList(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -37,6 +38,7 @@ class UsersDetail(APIView):
             "data": {
                 'username': instance.username,
                 'roles': roles,
+                'csrftoken': get_token(request),
             }
         }
         

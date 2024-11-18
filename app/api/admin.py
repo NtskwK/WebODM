@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 
 class UserSerializer(serializers.ModelSerializer):
+    requires_context = True
     class Meta:
         model  = User
         fields = '__all__' 
@@ -16,6 +17,11 @@ class UserSerializer(serializers.ModelSerializer):
         super(UserSerializer, self).__init__(*args, **kwargs)
         if self.context['request'].method == 'GET':
             self.fields.pop('password')
+        
+        # 修改密码单独做处理
+        if self.context['request'].method == 'PUT':
+            self.fields.pop('password')
+
 
 class AdminUserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
